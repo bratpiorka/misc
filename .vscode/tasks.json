@@ -1,0 +1,47 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: gcc build",
+            "command": "/usr/bin/gcc",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "-lnuma",
+                "-lhwloc"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "compiler: /usr/bin/gcc"
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: gcc build libxml2_test",
+            "command": "/usr/bin/gcc",
+            "args": [
+                "-g",
+                "${file}",
+                "-I\"/usr/include/libxml2\"",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "-lxml2"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "compiler: /usr/bin/gcc"
+        }
+    ],
+    "version": "2.0.0"
+}
