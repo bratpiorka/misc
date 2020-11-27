@@ -1,0 +1,37 @@
+
+<domain type='qemu'>
+  <name>qemu</name>
+  ...  
+  <cpu>
+    ...
+    <numa>
+      <cell id='0' cpus='0-7,32-39' memory='31871' unit='MiB'>
+        <distances>
+          <sibling id='0' value='10'/>
+          <sibling id='1' value='21'/>
+          <sibling id='2' value='31'/>
+          <sibling id='3' value='21'/>
+          ...
+          <sibling id='6' value='28'/>
+        </distances>
+      </cell>
+      <cell id='1' cpus='9-15,40-47' memory='32219' unit='MiB'>
+        <distances>
+          <sibling id='1' value='21'/>
+          ...
+        </distances>
+      </cell>
+      <cell id='2' cpus='16-23,48-55' memory='32252' unit='MiB'/>
+      <cell id='3' cpus='24-31,56-63' memory='32251' unit='MiB'/>
+      <cell id='4' cpus='' memory='256000' unit='MiB'/>
+      <cell id='5' cpus='' memory='256000' unit='MiB'/>
+      <cell id='6' cpus='' memory='256000' unit='MiB'/>
+      <cell id='7' cpus='' memory='256000' unit='MiB'/>
+      <interconnects>
+        <latency initiator='0' target='0' type='access' value='99999'/>
+        <bandwidth initiator='0' target='0' type='access' value='99999' unit='KiB'/>
+      </interconnects>
+    </numa>
+    ...
+  </cpu>
+</domain>

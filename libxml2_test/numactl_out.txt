@@ -14,10 +14,10 @@ node 3 free: 17816 MB
 node 4 cpus:
 node 4 size: 256000 MB
 node 4 free: 254350 MB
-node 5 cpus:
+node 5 cpus: 64 
 node 5 size: 256000 MB
 node 5 free: 255560 MB
-node 6 cpus:
+node 6 cpus: 65
 node 6 size: 256000 MB
 node 6 free: 255382 MB
 node distances:
