@@ -9,6 +9,7 @@
 #include <pthread.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <execinfo.h>
 #include <signal.h>
@@ -23,272 +24,17 @@
 #define UTILS_INIT   __attribute__((constructor))
 #define UTILS_FINI   __attribute__((destructor))
 
+uint32_t adler32(const void *buf, size_t buflength) {
+     const uint8_t *buffer = (const uint8_t*)buf;
 
-UTILS_EXPORT void *a(size_t size);
-UTILS_EXPORT void *b(size_t size);
-UTILS_EXPORT void *c(size_t size);
-UTILS_EXPORT void *d(size_t size);
-UTILS_EXPORT void *e(size_t size);
+     uint32_t s1 = 1;
+     uint32_t s2 = 0;
 
-
-UTILS_EXPORT void *a(size_t size)
-{
-    void *x = b(size);
-
-    fprintf(stderr, "aaaaaaaaaaa");
-    void *addr_re = __builtin_return_address (0);
-    fprintf(stderr, "a re add 0: %p \n", addr_re);
-    void *addr_reex = __builtin_extract_return_addr(__builtin_return_address(0));
-    fprintf(stderr, "a re add ex 0: %p \n", addr_re);
-
-    void *addr_re1 = __builtin_return_address (1);
-    fprintf(stderr, "a re add 1: %p\n", addr_re1);
-    void *addr_re2 = __builtin_return_address (2);
-    fprintf(stderr, "a re add 2: %p\n", addr_re2);
-    void *addr_re3 = __builtin_return_address (3);
-    fprintf(stderr, "a re add 3: %p\n", addr_re3);
-    void *addr_re4 = __builtin_return_address (4);
-    fprintf(stderr, "a re add 4: %p\n", addr_re4);
-    void *addr_re5 = __builtin_return_address (5);
-    fprintf(stderr, "a re add 5: %p\n", addr_re5);
-    void *addr_re6 = __builtin_return_address (6);
-    fprintf(stderr, "a re add 6: %p\n", addr_re6);
-
-    void *addr0 = __builtin_frame_address(0);
-    fprintf(stderr, "a frame 0: %p \n", addr0);
-    void *addr1 = __builtin_frame_address(1);
-    fprintf(stderr, "a frame 1: %p \n", addr1);
-    void *addr2 = __builtin_frame_address(2);
-    fprintf(stderr, "a frame 2: %p \n", addr2);
-    void *addr3 = __builtin_frame_address(3);
-    fprintf(stderr, "a frame 3: %p \n", addr3);
-    void *addr4 = __builtin_frame_address(4);
-    fprintf(stderr, "a frame 4: %p \n", addr4);
-    void *addr5 = __builtin_frame_address(5);
-    fprintf(stderr, "a frame 5: %p \n", addr5);
-    void *addr6 = __builtin_frame_address(6);
-    fprintf(stderr, "a frame 6: %p \n", addr6);
-
-    return x;
-}
-
-UTILS_EXPORT void *b(size_t size)
-{
-    void *x = c(size);
-
-    fprintf(stderr, "bbbbbbbbbbbb");
-    void *addr_re = __builtin_return_address (0);
-    fprintf(stderr, "b re add 0: %p \n", addr_re);
-    void *addr_reex = __builtin_extract_return_addr(__builtin_return_address(0));
-    fprintf(stderr, "b re add ex 0: %p \n", addr_re);
-
-    void *addr_re1 = __builtin_return_address (1);
-    fprintf(stderr, "b re add 1: %p\n", addr_re1);
-    void *addr_re2 = __builtin_return_address (2);
-    fprintf(stderr, "b re add 2: %p\n", addr_re2);
-    void *addr_re3 = __builtin_return_address (3);
-    fprintf(stderr, "b re add 3: %p\n", addr_re3);
-    void *addr_re4 = __builtin_return_address (4);
-    fprintf(stderr, "b re add 4: %p\n", addr_re4);
-    void *addr_re5 = __builtin_return_address (5);
-    fprintf(stderr, "b re add 5: %p\n", addr_re5);
-    void *addr_re6 = __builtin_return_address (6);
-    fprintf(stderr, "b re add 6: %p\n", addr_re6);
-
-    void *addr0 = __builtin_frame_address(0);
-    fprintf(stderr, "b frame 0: %p \n", addr0);
-    void *addr1 = __builtin_frame_address(1);
-    fprintf(stderr, "b frame 1: %p \n", addr1);
-    void *addr2 = __builtin_frame_address(2);
-    fprintf(stderr, "b frame 2: %p \n", addr2);
-    void *addr3 = __builtin_frame_address(3);
-    fprintf(stderr, "b frame 3: %p \n", addr3);
-    void *addr4 = __builtin_frame_address(4);
-    fprintf(stderr, "b frame 4: %p \n", addr4);
-    void *addr5 = __builtin_frame_address(5);
-    fprintf(stderr, "b frame 5: %p \n", addr5);
-    void *addr6 = __builtin_frame_address(6);
-    fprintf(stderr, "b frame 6: %p \n", addr6);
-
-    return x;
-}
-
-UTILS_EXPORT void *c(size_t size)
-{
-    void *x = d(size);
-
-    fprintf(stderr, "cccccccccccccc");
-    void *addr_re = __builtin_return_address (0);
-    fprintf(stderr, "c re add 0: %p \n", addr_re);
-    void *addr_reex = __builtin_extract_return_addr(__builtin_return_address(0));
-    fprintf(stderr, "c re add ex 0: %p \n", addr_re);
-
-    void *addr_re1 = __builtin_return_address (1);
-    fprintf(stderr, "c re add 1: %p\n", addr_re1);
-    void *addr_re2 = __builtin_return_address (2);
-    fprintf(stderr, "c re add 2: %p\n", addr_re2);
-    void *addr_re3 = __builtin_return_address (3);
-    fprintf(stderr, "c re add 3: %p\n", addr_re3);
-    void *addr_re4 = __builtin_return_address (4);
-    fprintf(stderr, "c re add 4: %p\n", addr_re4);
-    void *addr_re5 = __builtin_return_address (5);
-    fprintf(stderr, "c re add 5: %p\n", addr_re5);
-    void *addr_re6 = __builtin_return_address (6);
-    fprintf(stderr, "c re add 6: %p\n", addr_re6);
-
-    void *addr0 = __builtin_frame_address(0);
-    fprintf(stderr, "c frame 0: %p \n", addr0);
-    void *addr1 = __builtin_frame_address(1);
-    fprintf(stderr, "c frame 1: %p \n", addr1);
-    void *addr2 = __builtin_frame_address(2);
-    fprintf(stderr, "c frame 2: %p \n", addr2);
-    void *addr3 = __builtin_frame_address(3);
-    fprintf(stderr, "c frame 3: %p \n", addr3);
-    void *addr4 = __builtin_frame_address(4);
-    fprintf(stderr, "c frame 4: %p \n", addr4);
-    void *addr5 = __builtin_frame_address(5);
-    fprintf(stderr, "c frame 5: %p \n", addr5);
-    void *addr6 = __builtin_frame_address(6);
-    fprintf(stderr, "c frame 6: %p \n", addr6);
-
-    return x;
-}
-UTILS_EXPORT void *d(size_t size)
-{
-    void *x = e(size);
-
-    fprintf(stderr, "dddddddddd");
-    void *addr_re = __builtin_return_address (0);
-    fprintf(stderr, "d re add 0: %p \n", addr_re);
-    void *addr_reex = __builtin_extract_return_addr(__builtin_return_address(0));
-    fprintf(stderr, "d re add ex 0: %p \n", addr_re);
-
-    void *addr_re1 = __builtin_return_address (1);
-    fprintf(stderr, "d re add 1: %p\n", addr_re1);
-    void *addr_re2 = __builtin_return_address (2);
-    fprintf(stderr, "d re add 2: %p\n", addr_re2);
-    void *addr_re3 = __builtin_return_address (3);
-    fprintf(stderr, "d re add 3: %p\n", addr_re3);
-    void *addr_re4 = __builtin_return_address (4);
-    fprintf(stderr, "d re add 4: %p\n", addr_re4);
-    void *addr_re5 = __builtin_return_address (5);
-    fprintf(stderr, "d re add 5: %p\n", addr_re5);
-    void *addr_re6 = __builtin_return_address (6);
-    fprintf(stderr, "d re add 6: %p\n", addr_re6);
-
-    void *addr0 = __builtin_frame_address(0);
-    fprintf(stderr, "d frame 0: %p \n", addr0);
-    void *addr1 = __builtin_frame_address(1);
-    fprintf(stderr, "d frame 1: %p \n", addr1);
-    void *addr2 = __builtin_frame_address(2);
-    fprintf(stderr, "d frame 2: %p \n", addr2);
-    void *addr3 = __builtin_frame_address(3);
-    fprintf(stderr, "d frame 3: %p \n", addr3);
-    void *addr4 = __builtin_frame_address(4);
-    fprintf(stderr, "d frame 4: %p \n", addr4);
-    void *addr5 = __builtin_frame_address(5);
-    fprintf(stderr, "d frame 5: %p \n", addr5);
-    void *addr6 = __builtin_frame_address(6);
-    fprintf(stderr, "d frame 6: %p \n", addr6);
-
-    return x;
-}
-UTILS_EXPORT void *e(size_t size)
-{
-    int a = 4;
-    int b = 5;
-
-    fprintf(stderr, "eeeeee\n");
-    void *addr_re = __builtin_return_address (0);
-    fprintf(stderr, "e re add 0: %p &a: %p\n", addr_re, &a);
-    void *addr_reex = __builtin_extract_return_addr(__builtin_return_address(0));
-    fprintf(stderr, "e re add ex 0: %p \n", addr_reex);
-
-    void *addr_re1 = __builtin_return_address (1);
-    fprintf(stderr, "e re add 1: %p\n", addr_re1);
-    void *addr_re2 = __builtin_return_address (2);
-    fprintf(stderr, "e re add 2: %p\n", addr_re2);
-    void *addr_re3 = __builtin_return_address (3);
-    fprintf(stderr, "e re add 3: %p\n", addr_re3);
-    void *addr_re4 = __builtin_return_address (4);
-    fprintf(stderr, "e re add 4: %p\n", addr_re4);
-    void *addr_re5 = __builtin_return_address (5);
-    fprintf(stderr, "e re add 5: %p\n", addr_re5);
-
-    void *addr0 = __builtin_frame_address(0);
-    fprintf(stderr, "e frame 0: %p \n", addr0);
-    void *addr1 = __builtin_frame_address(1);
-    fprintf(stderr, "e frame 1: %p \n", addr1);
-    void *addr2 = __builtin_frame_address(2);
-    fprintf(stderr, "e frame 2: %p \n", addr2);
-    void *addr3 = __builtin_frame_address(3);
-    fprintf(stderr, "e frame 3: %p \n", addr3);
-    void *addr4 = __builtin_frame_address(4);
-    fprintf(stderr, "e frame 4: %p \n", addr4);
-    void *addr5 = __builtin_frame_address(5);
-    fprintf(stderr, "e frame 5: %p \n", addr5);
-
-    //void *addr6 = __builtin_frame_address(6);
-    //fprintf(stderr, "e frame 6: %p \n", addr6);
-
-    return &a + b;
-}
-
-int xe(int val)
-{
-    int a = 4;
-    void *ptr = &a;
-
-    void *addr_re = __builtin_return_address (0);
-    fprintf(stderr, "xe re add 0: %p &a: %p\n", addr_re, &a);
-    void *addr_re1 = __builtin_return_address (1);
-    fprintf(stderr, "xe re add 1: %p\n", addr_re1);
-
-    int cnt = 20;
-    while (cnt >= 0) {
-        fprintf(stderr, "xe ptr = %p, *=%p\n", ptr, *(size_t*)ptr);
-        cnt --;
-        ptr += 4;
-    }
-}
-
-int xd(int val)
-{
-    int xxd = 4;
-    int xxd2 = 4;
-    int xxd3 = 4;
-    int xxd4 = 4;
-    int xxd5 = 4;
-    fprintf(stderr, "xd addr: %p\n", &xd);
-    xxd = xe(xxd + xxd2 + xxd3 + xxd4 + xxd5);
-    return xxd;
-}
-
-int xc(int val)
-{
-    int xxc = 4;
-    int xxc2 = 4;
-    int xxc3 = 4;
-    fprintf(stderr, "xc addr: %p\n", &xc);
-    xxc = xd(xxc + xxc2 + xxc3);
-    return xxc;
-}
-
-int xb(int val)
-{
-    int xxb = 4;
-    int xxb2 = 4;
-    fprintf(stderr, "xb addr: %p\n", &xb);
-    xxb = xc(xxb + xxb2);
-    return xxb;
-}
-
-int xa(int val)
-{
-    int xxa = val;
-    fprintf(stderr, "xa addr: %p\n", &xa);
-    xxa = xb(xxa);
-    return xxa;
+     for (size_t n = 0; n < buflength; n++) {
+        s1 = (s1 + buffer[n]) % 65521;
+        s2 = (s2 + s1) % 65521;
+     }
+     return (s2 << 16) | s1;
 }
 
 static void* (*real_malloc)(size_t) = NULL;
@@ -296,39 +42,21 @@ static void* (*real_malloc)(size_t) = NULL;
 static void mtrace_init(void)
 {
     real_malloc = dlsym(RTLD_NEXT, "malloc");
-
     if (NULL == real_malloc) {
         fprintf(stderr, "Error in `dlsym`: %s\n", dlerror());
+        abort();
     }
 }
 
-void parse_proc_maps(int PID)
-{
-    static char c;
-    static long pos = 0;
-    /*
-    fh = fopen(proc_stat_path, "r");
-    if(fh == NULL) ...
-
-
-    // Find the last ")" char in stat file and parse fields thereafter.
-    #define RIGHTBRACKET ')'
-    while(1)
-    {
-            c = fgetc(fh);
-            if (c == EOF) break;
-            if (c == RIGHTBRACKET) pos = ftell(fh);
-    }
-    fseek(fh, pos, 0);
-
-    fscanf(fh, " %c %d %d" ..., &state, &ppid, ...);*/
-}
+#define MAX_BT_DEPTH 12
+#define MAX_HASH_COUNT 1024
 
 void* pool_start[255];
 void* pool_end[255];
 int pool_num;
-int max_bt_depth = 10;
+uint32_t hashes[MAX_HASH_COUNT];
 int initialized = 0;
+void* stack_end;
 
 void UTILS_INIT bt_init()
 {
@@ -345,7 +73,7 @@ void UTILS_INIT bt_init()
 
     void *start, *end;
     char r, w, x, p;
-    unsigned int off;
+    void *off;
     char sth[6] = {0};
     unsigned int sth2;
     char path[255] = {0};
@@ -357,12 +85,16 @@ void UTILS_INIT bt_init()
                           &start, &end, &r, &w, &x, &p,
                           &off, sth, &sth2, path);
 
+        if (strcmp(path, "[stack]") == 0) {
+            stack_end = end;
+            fprintf(stderr, "%s: %s", proc_maps_path, buffer);
+        }
+
         if ((num < 10) || (x != 'x')) {
-            //fprintf(stderr, "num: %d x: %c\n", num, x);
             continue;
         }
 
-        fprintf(stderr, buffer);
+        fprintf(stderr, "%s: %s", proc_maps_path, buffer);
         pool_start[pool_num] = start;
         pool_end[pool_num] = end;
         pool_num++;
@@ -371,7 +103,21 @@ void UTILS_INIT bt_init()
     initialized = 1;
 }
 
-static pthread_once_t init_once = PTHREAD_ONCE_INIT;
+void UTILS_FINI bt_fini()
+{
+    int i;
+    int sum_all = 0;
+    int sum_dif = 0;
+    for (i = 0; i < MAX_HASH_COUNT; i++) {
+        if (hashes[i] != 0) {
+            fprintf(stderr, "bucket: %d count: %d\n", i, hashes[i]);
+            sum_all += hashes[i];
+            sum_dif ++;
+        }
+    }
+
+    fprintf(stderr, "all: %d dif: %d\n", sum_all, sum_dif);
+}
 
 UTILS_EXPORT void *malloc(size_t size)
 {
@@ -380,22 +126,30 @@ UTILS_EXPORT void *malloc(size_t size)
 
     if (initialized) {
         unsigned char* stack = __builtin_frame_address(0);
+
+        void* calls[MAX_BT_DEPTH];
         int num_calls = 0;
-        while (num_calls < max_bt_depth) {
+        int depth = 0;
+        while ((num_calls < MAX_BT_DEPTH) && (stack <= stack_end - sizeof(size_t))) {
             int i;
             //fprintf(stderr, "looking for: %p\n", *((size_t*)stack));
+            //fprintf(stderr, "%p-%p (%d) ", ((size_t*)stack), *((size_t*)stack), depth);
             for (i = 0; i < pool_num; i++) {
-                if (*((size_t*)stack) > pool_start[i] && *((size_t*)stack) < pool_end[i]) {
+                if ((*((size_t*)stack) > pool_start[i]) &&
+                    (*((size_t*)stack) < pool_end[i])) {
                     //fprintf(stderr, "call %p in %p-%p\n", stack, pool_start[i], pool_end[i]);
-                    if (stack != NULL)
-                        //fprintf(stderr, "found: %p ", *((size_t*)stack));
-                        fprintf(stderr, "%p ", *((size_t*)stack));
+                    //fprintf(stderr, "found: %p ", *((size_t*)stack));
+                    fprintf(stderr, "%p ", *((size_t*)stack));
+                    calls[num_calls] = *((size_t*)stack);
                     num_calls ++;
                 }
             }
-            stack += 4;
+            stack += 4; // 8? are there any alignment constraints that we could use?
+            depth ++;
         }
-        fprintf(stderr, "\n");
+        unsigned int hash = adler32(calls, num_calls);
+        fprintf(stderr, "hash %x\n", hash);
+        hashes[hash % MAX_HASH_COUNT] ++;
     }
 
     void *p = real_malloc(size);
