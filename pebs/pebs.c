@@ -265,8 +265,13 @@ void pebs_init()
         PFM_OS_PERF_EVENT_EXT, &arg);
 
     if (ret != PFM_SUCCESS) {
-        printf("pfm_get_os_event_encoding() failed!\n");
-        exit(-1);
+        printf("pfm_get_os_event_encoding() failed!\n");        
+        printf("trying to use magic numbers!!!\n");
+            
+        pe.type=PERF_TYPE_RAW;
+        pe.config=0x1cd;
+        pe.config1=0x3;
+        pe.precise_ip=2;
     }
     /*/
 
