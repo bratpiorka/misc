@@ -1,4 +1,4 @@
 *.so
 *.o
-*.json
+vscode/*
 matmul/matmul

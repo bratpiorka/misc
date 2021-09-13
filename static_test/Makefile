@@ -1,5 +1,5 @@
-TARGET = pebs
-LIBS = -lm -lpfm -lpthread
+TARGET = matmul
+LIBS = -Bstatic -lmemkind -ldl -lnuma -lpthread -ldaxctl -lhwloc
 CC = gcc
 CFLAGS = -g -Wall
 

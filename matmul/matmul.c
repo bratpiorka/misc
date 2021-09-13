@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <dirent.h>
 
-#define MATRIX_SIZE 512
+#define MATRIX_SIZE 128
 double *a = 0, *b = 0, *c = 0;
 double s;
 int i,j,k;
