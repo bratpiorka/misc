@@ -1,0 +1,208 @@
+KVBM -> cudarc API inventory
+
+Scope
+- This summary covers direct, non-test KVBM usage of cudarc in:
+  - dynamo/lib/kvbm-physical
+  - dynamo/lib/kvbm-kernels
+  - dynamo/lib/bindings/kvbm
+- Test-only cudarc usage exists in transfer and kernel tests, but is excluded from the main inventory below.
+- There is also indirect CUDA usage through dynamo_memory::CudaMemPool. That pool internally uses cudarc, but this file only enumerates the direct KVBM call sites plus the obvious indirect entrypoints.
+
+Top-level call path
+- TransferManager::builder() in dynamo/lib/kvbm-physical/src/manager/mod.rs delegates to TransferContext::builder().
+- TransferConfig::build() / TransferConfigBuilderWithAgent::build() in dynamo/lib/kvbm-physical/src/transfer/context.rs create the CUDA context with:
+  - cudarc::driver::CudaContext::new(device_id)
+- TransferContext::new(...) then configures runtime resources on top of that context.
+
+1. Context, stream, and event management
+
+File: dynamo/lib/kvbm-physical/src/transfer/context.rs
+Main KVBM entrypoints:
+- TransferConfig::build
+- TransferConfigBuilderWithAgent::build
+- TransferContext::new
+- TransferContext::register_cuda_event
+
+Direct cudarc calls/types used:
+- cudarc::driver::CudaContext::new
+  - creates the per-device CUDA context for KVBM transfers
+- unsafe CudaContext::disable_event_tracking
+  - disables cudarc's internal event tracking in this context
+- CudaContext::new_stream
+  - creates the 4 H2D streams and 4 D2H streams used by the stream pool
+- cudarc::driver::CudaStream
+  - stored in TransferContext and optionally passed in via TransferOptions
+- cudarc::driver::CudaEvent
+  - accepted by register_cuda_event for async completion tracking
+
+Indirect cudarc entrypoints from KVBM:
+- dynamo_memory::CudaMemPool::builder(cuda_context, reserve_size)
+  - KVBM uses this for temporary device allocations during FC<->LW transfers
+  - actual cudarc allocation details live in dynamo_memory, not in KVBM itself
+
+2. Async transfer execution
+
+File: dynamo/lib/kvbm-physical/src/transfer/executor/cuda.rs
+Main KVBM entrypoints:
+- execute_cuda_transfer
+- execute_whole_block_cuda
+- execute_fc_lw_vectorized
+
+Direct cudarc calls/types used:
+- CudaStream::record_event(None)
+  - records a completion event after async H2D/D2H/D2D transfers
+- CudaStream::cu_stream()
+  - extracts the raw CUstream handle passed into lower-level kernels/APIs
+- CudaStream::context().bind_to_thread()
+  - binds the stream's CUDA context to the current thread before CUDA operations
+- cudarc::driver::result::memcpy_htod_async
+  - uploads host-built pointer tables into device memory before vectorized_copy launches
+- CudaEvent::synchronize()
+  - waits for the pointer-table upload event before returning from FC<->LW setup
+- cudarc::runtime::sys::cudaStream_t
+  - raw stream type used when calling kvbm_kernels wrappers
+- cudarc::runtime::sys::cudaError::cudaSuccess
+  - checked after kernel wrapper calls
+
+Indirect cudarc entrypoints from KVBM:
+- CudaMemPool::alloc_async(..., stream)
+- CudaMemPool::free_async(..., stream)
+  - used to allocate/free temporary device buffers for the src/dst pointer arrays
+  - these eventually map to cudarc-backed CUDA memory management inside dynamo_memory
+
+How the transfer path reaches cudarc
+- execute_cuda_transfer picks a cudarc CudaStream from TransferContext.
+- Whole-block FC->FC path:
+  - passes stream.cu_stream() into kvbm_kernels::memcpy_batch(...)
+- FC<->LW path:
+  - uses cudarc::driver::result::memcpy_htod_async to upload pointer tables
+  - passes stream.cu_stream() into kvbm_kernels::vectorized_copy(...)
+  - records/synchronizes a cudarc event around the setup work
+
+3. CUDA event polling for async completion
+
+File: dynamo/lib/kvbm-physical/src/transfer/notifications/cuda_event.rs
+Main KVBM entrypoint:
+- CudaEventChecker::is_complete
+
+Direct cudarc calls/types used:
+- CudaEvent::cu_event()
+  - extracts raw CUevent for polling
+- cudarc::driver::result::event::query(...)
+  - polls completion state of the CUDA event
+- cudarc::driver::DriverError
+- cudarc::driver::sys::CUresult
+  - specifically matches CUDA_ERROR_NOT_READY to represent "still pending"
+
+4. Runtime memcpy in test/verification helpers
+
+Files:
+- dynamo/lib/kvbm-physical/src/transfer/checksum.rs
+- dynamo/lib/kvbm-physical/src/transfer/fill.rs
+
+Main KVBM entrypoints:
+- compute_block_checksums / compute_layer_checksums
+- fill_blocks / fill_layers
+
+Direct cudarc calls/types used:
+- cudarc::runtime::sys::cudaMemcpy
+- cudarc::runtime::sys::cudaMemcpyKind
+  - cudaMemcpyDeviceToHost in checksum.rs
+  - cudaMemcpyHostToDevice in fill.rs
+- cudarc::runtime::sys::cudaError::cudaSuccess
+  - validates memcpy success
+
+These helpers are not the high-throughput transfer engine, but they are direct KVBM -> cudarc call sites used for block verification and test setup on device-backed layouts.
+
+5. kvbm-kernels crate
+
+File: dynamo/lib/kvbm-kernels/src/tensor_kernels.rs
+Main KVBM entrypoints:
+- memcpy_batch
+- vectorized_copy
+- universal_from_block
+- block_from_universal
+- is_memcpy_batch_available
+- is_using_stubs
+
+Direct cudarc calls/types used in non-test code:
+- cudarc::runtime::sys::cudaError_t
+- cudarc::runtime::sys::cudaStream_t
+
+Important detail:
+- In production code, kvbm-kernels mostly uses cudarc only as a source of CUDA runtime types.
+- The actual work is performed by extern "C" CUDA functions from libkvbm_kernels:
+  - kvbm_kernels_memcpy_batch
+  - kvbm_kernels_launch_vectorized_copy
+  - kvbm_kernels_launch_universal_from_block
+  - kvbm_kernels_launch_block_from_universal
+- So this crate is a thin wrapper layer, not a heavy direct cudarc caller in production.
+
+6. Python binding / vLLM connector helper
+
+File: dynamo/lib/bindings/kvbm/src/block_manager/vllm/connector/worker.rs
+Main KVBM entrypoints:
+- _get_current_context
+- event_sync_blocking
+
+Direct cudarc calls/types used:
+- cudarc::driver::sys::cuCtxGetCurrent
+- cudarc::driver::sys::cuEventSynchronize
+- cudarc::driver::sys::CUcontext
+- cudarc::driver::sys::CUevent
+- cudarc::driver::sys::cudaError_enum::CUDA_SUCCESS
+
+This is a direct raw-driver FFI usage through cudarc's sys module, used to inspect the current CUDA context and synchronously wait on an event handle coming from the connector path.
+
+Exact direct cudarc API set used by production KVBM code
+
+Driver layer
+- cudarc::driver::CudaContext::new
+- CudaContext::disable_event_tracking
+- CudaContext::new_stream
+- cudarc::driver::CudaStream
+- CudaStream::record_event
+- CudaStream::cu_stream
+- CudaStream::context
+- CudaContext::bind_to_thread
+- cudarc::driver::CudaEvent
+- CudaEvent::synchronize
+- CudaEvent::cu_event
+- cudarc::driver::result::memcpy_htod_async
+- cudarc::driver::result::event::query
+- cudarc::driver::DriverError
+
+Runtime layer
+- cudarc::runtime::sys::cudaMemcpy
+- cudarc::runtime::sys::cudaMemcpyKind::{cudaMemcpyHostToDevice, cudaMemcpyDeviceToHost}
+- cudarc::runtime::sys::cudaStream_t
+- cudarc::runtime::sys::cudaError_t
+- cudarc::runtime::sys::cudaError::cudaSuccess
+
+Raw driver sys layer
+- cudarc::driver::sys::CUresult
+- cudarc::driver::sys::CUcontext
+- cudarc::driver::sys::CUevent
+- cudarc::driver::sys::cuCtxGetCurrent
+- cudarc::driver::sys::cuEventSynchronize
+- cudarc::driver::sys::cudaError_enum::CUDA_SUCCESS
+
+Practical takeaway
+- The main production KVBM -> cudarc dependency is in kvbm-physical, not kvbm-kernels.
+- kvbm-physical uses cudarc for:
+  - creating/managing CUDA contexts and streams
+  - recording and polling completion events
+  - uploading pointer tables for FC<->LW transfers
+  - simple verification memcpy helpers
+- kvbm-kernels mostly consumes raw CUDA stream/error types from cudarc and forwards work into the compiled CUDA helper library.
+- bindings/kvbm uses cudarc::driver::sys directly for context/event synchronization glue.
+
+Test-only extra cudarc usage (excluded from main inventory)
+- kvbm-physical transfer tests use additional cudarc APIs such as:
+  - CudaContext, CudaStream, LaunchConfig, PushKernelArg
+  - cudarc::nvrtc::compile_ptx_with_opts
+  - CudaFunction and low-level launch helpers
+- kvbm-kernels tests/examples use additional cudarc APIs such as:
+  - CudaSlice, DevicePtr, DevicePtrMut
+  - memset_d8_async
+  - NVRTC compilation helpers
