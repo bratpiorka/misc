@@ -1,5 +1,5 @@
 #[link(name = "ur_loader")]
-unsafe extern "C" {}
+extern "C" {}
 
 pub mod unified_runtime;
 

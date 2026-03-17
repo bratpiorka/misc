@@ -1,16 +1,10 @@
-use std::env;
+#[path = "../../../oneapi_helper.rs"]
+mod oneapi_helper;
 
 use oneapi_rs::unified_runtime::safe::Context;
 
 fn main() {
-    if env::var_os("UR_ADAPTERS_SEARCH_PATH")
-        .as_deref()
-        .is_none_or(|value| value.is_empty())
-    {
-        eprintln!(
-            "UR_ADAPTERS_SEARCH_PATH is not set. Point it at the Unified Runtime lib directory if adapter discovery fails."
-        );
-    }
+    oneapi_helper::configure_runtime_environment();
 
     if let Err(error) = run() {
         eprintln!("{error}");

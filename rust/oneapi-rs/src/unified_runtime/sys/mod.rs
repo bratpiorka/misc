@@ -556,15 +556,15 @@ pub enum ur_device_init_flag_t {
     UR_DEVICE_INIT_FLAG_VPU = 16,
     UR_DEVICE_INIT_FLAG_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urLoaderConfigCreate(
         phLoaderConfig: *mut ur_loader_config_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urLoaderConfigRetain(hLoaderConfig: ur_loader_config_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urLoaderConfigRelease(
         hLoaderConfig: ur_loader_config_handle_t,
     ) -> ur_result_t;
@@ -576,7 +576,7 @@ pub enum ur_loader_config_info_t {
     UR_LOADER_CONFIG_INFO_REFERENCE_COUNT = 1,
     UR_LOADER_CONFIG_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urLoaderConfigGetInfo(
         hLoaderConfig: ur_loader_config_handle_t,
         propName: ur_loader_config_info_t,
@@ -585,7 +585,7 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urLoaderConfigEnableLayer(
         hLoaderConfig: ur_loader_config_handle_t,
         pLayerName: *const ::core::ffi::c_char,
@@ -602,42 +602,42 @@ pub struct ur_code_location_t {
 pub type ur_code_location_callback_t = ::core::option::Option<
     unsafe extern "C" fn(pUserData: *mut ::core::ffi::c_void) -> ur_code_location_t,
 >;
-unsafe extern "C" {
+extern "C" {
     pub fn urLoaderConfigSetCodeLocationCallback(
         hLoaderConfig: ur_loader_config_handle_t,
         pfnCodeloc: ur_code_location_callback_t,
         pUserData: *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urLoaderConfigSetMockingEnabled(
         hLoaderConfig: ur_loader_config_handle_t,
         enable: ur_bool_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urLoaderInit(
         device_flags: ur_device_init_flags_t,
         hLoaderConfig: ur_loader_config_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urLoaderTearDown() -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urAdapterGet(
         NumEntries: u32,
         phAdapters: *mut ur_adapter_handle_t,
         pNumAdapters: *mut u32,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urAdapterRelease(hAdapter: ur_adapter_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urAdapterRetain(hAdapter: ur_adapter_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urAdapterGetLastError(
         hAdapter: ur_adapter_handle_t,
         ppMessage: *mut *const ::core::ffi::c_char,
@@ -652,7 +652,7 @@ pub enum ur_adapter_info_t {
     UR_ADAPTER_INFO_VERSION = 2,
     UR_ADAPTER_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urAdapterGetInfo(
         hAdapter: ur_adapter_handle_t,
         propName: ur_adapter_info_t,
@@ -678,7 +678,7 @@ pub type ur_logger_callback_t = ::core::option::Option<
         pUserData: *mut ::core::ffi::c_void,
     ),
 >;
-unsafe extern "C" {
+extern "C" {
     pub fn urAdapterSetLoggerCallback(
         hAdapter: ur_adapter_handle_t,
         pfnLoggerCallback: ur_logger_callback_t,
@@ -686,13 +686,13 @@ unsafe extern "C" {
         level: ur_logger_level_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urAdapterSetLoggerCallbackLevel(
         hAdapter: ur_adapter_handle_t,
         level: ur_logger_level_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urPlatformGet(
         hAdapter: ur_adapter_handle_t,
         NumEntries: u32,
@@ -712,7 +712,7 @@ pub enum ur_platform_info_t {
     UR_PLATFORM_INFO_ADAPTER = 7,
     UR_PLATFORM_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urPlatformGetInfo(
         hPlatform: ur_platform_handle_t,
         propName: ur_platform_info_t,
@@ -736,13 +736,13 @@ pub enum ur_api_version_t {
     UR_API_VERSION_0_12 = 12,
     UR_API_VERSION_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urPlatformGetApiVersion(
         hPlatform: ur_platform_handle_t,
         pVersion: *mut ur_api_version_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urPlatformGetNativeHandle(
         hPlatform: ur_platform_handle_t,
         phNativePlatform: *mut ur_native_handle_t,
@@ -755,7 +755,7 @@ pub struct ur_platform_native_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub isNativeHandleOwned: bool,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urPlatformCreateWithNativeHandle(
         hNativePlatform: ur_native_handle_t,
         hAdapter: ur_adapter_handle_t,
@@ -763,7 +763,7 @@ unsafe extern "C" {
         phPlatform: *mut ur_platform_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urPlatformGetBackendOption(
         hPlatform: ur_platform_handle_t,
         pFrontendOption: *const ::core::ffi::c_char,
@@ -790,7 +790,7 @@ pub enum ur_device_type_t {
     UR_DEVICE_TYPE_CUSTOM = 8,
     UR_DEVICE_TYPE_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urDeviceGet(
         hPlatform: ur_platform_handle_t,
         DeviceType: ur_device_type_t,
@@ -799,7 +799,7 @@ unsafe extern "C" {
         pNumDevices: *mut u32,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urDeviceGetSelected(
         hPlatform: ur_platform_handle_t,
         DeviceType: ur_device_type_t,
@@ -992,7 +992,7 @@ pub enum ur_device_info_t {
     UR_DEVICE_INFO_ENQUEUE_HOST_TASK_SUPPORT_EXP = 36864,
     UR_DEVICE_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urDeviceGetInfo(
         hDevice: ur_device_handle_t,
         propName: ur_device_info_t,
@@ -1001,10 +1001,10 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urDeviceRetain(hDevice: ur_device_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urDeviceRelease(hDevice: ur_device_handle_t) -> ur_result_t;
 }
 pub type ur_device_affinity_domain_flags_t = u32;
@@ -1049,7 +1049,7 @@ pub struct ur_device_partition_properties_t {
     pub pProperties: *const ur_device_partition_property_t,
     pub PropCount: usize,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urDevicePartition(
         hDevice: ur_device_handle_t,
         pProperties: *const ur_device_partition_properties_t,
@@ -1058,7 +1058,7 @@ unsafe extern "C" {
         pNumDevicesRet: *mut u32,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urDeviceSelectBinary(
         hDevice: ur_device_handle_t,
         pBinaries: *const ur_device_binary_t,
@@ -1104,7 +1104,7 @@ pub enum ur_device_exec_capability_flag_t {
     UR_DEVICE_EXEC_CAPABILITY_FLAG_NATIVE_KERNEL = 2,
     UR_DEVICE_EXEC_CAPABILITY_FLAG_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urDeviceGetNativeHandle(
         hDevice: ur_device_handle_t,
         phNativeDevice: *mut ur_native_handle_t,
@@ -1117,7 +1117,7 @@ pub struct ur_device_native_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub isNativeHandleOwned: bool,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urDeviceCreateWithNativeHandle(
         hNativeDevice: ur_native_handle_t,
         hAdapter: ur_adapter_handle_t,
@@ -1125,7 +1125,7 @@ unsafe extern "C" {
         phDevice: *mut ur_device_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urDeviceGetGlobalTimestamps(
         hDevice: ur_device_handle_t,
         pDeviceTimestamp: *mut u64,
@@ -1201,7 +1201,7 @@ pub struct ur_context_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub flags: ur_context_flags_t,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urContextCreate(
         DeviceCount: u32,
         phDevices: *const ur_device_handle_t,
@@ -1209,7 +1209,7 @@ unsafe extern "C" {
         phContext: *mut ur_context_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urContextRetain(hContext: ur_context_handle_t) -> ur_result_t;
 }
 #[repr(u32)]
@@ -1222,10 +1222,10 @@ pub enum ur_context_info_t {
     UR_CONTEXT_INFO_USM_FILL2D_SUPPORT = 4,
     UR_CONTEXT_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urContextRelease(hContext: ur_context_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urContextGetInfo(
         hContext: ur_context_handle_t,
         propName: ur_context_info_t,
@@ -1234,7 +1234,7 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urContextGetNativeHandle(
         hContext: ur_context_handle_t,
         phNativeContext: *mut ur_native_handle_t,
@@ -1247,7 +1247,7 @@ pub struct ur_context_native_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub isNativeHandleOwned: bool,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urContextCreateWithNativeHandle(
         hNativeContext: ur_native_handle_t,
         hAdapter: ur_adapter_handle_t,
@@ -1260,7 +1260,7 @@ unsafe extern "C" {
 pub type ur_context_extended_deleter_t = ::core::option::Option<
     unsafe extern "C" fn(pUserData: *mut ::core::ffi::c_void),
 >;
-unsafe extern "C" {
+extern "C" {
     pub fn urContextSetExtendedDeleter(
         hContext: ur_context_handle_t,
         pfnDeleter: ur_context_extended_deleter_t,
@@ -1375,7 +1375,7 @@ pub struct ur_image_desc_t {
     pub numMipLevel: u32,
     pub numSamples: u32,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemImageCreate(
         hContext: ur_context_handle_t,
         flags: ur_mem_flags_t,
@@ -1406,7 +1406,7 @@ pub struct ur_buffer_alloc_location_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub location: u32,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemBufferCreate(
         hContext: ur_context_handle_t,
         flags: ur_mem_flags_t,
@@ -1415,10 +1415,10 @@ unsafe extern "C" {
         phBuffer: *mut ur_mem_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemRetain(hMem: ur_mem_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemRelease(hMem: ur_mem_handle_t) -> ur_result_t;
 }
 #[repr(C)]
@@ -1435,7 +1435,7 @@ pub enum ur_buffer_create_type_t {
     UR_BUFFER_CREATE_TYPE_REGION = 0,
     UR_BUFFER_CREATE_TYPE_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemBufferPartition(
         hBuffer: ur_mem_handle_t,
         flags: ur_mem_flags_t,
@@ -1444,7 +1444,7 @@ unsafe extern "C" {
         phMem: *mut ur_mem_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemGetNativeHandle(
         hMem: ur_mem_handle_t,
         hDevice: ur_device_handle_t,
@@ -1458,7 +1458,7 @@ pub struct ur_mem_native_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub isNativeHandleOwned: bool,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemBufferCreateWithNativeHandle(
         hNativeMem: ur_native_handle_t,
         hContext: ur_context_handle_t,
@@ -1466,7 +1466,7 @@ unsafe extern "C" {
         phMem: *mut ur_mem_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemImageCreateWithNativeHandle(
         hNativeMem: ur_native_handle_t,
         hContext: ur_context_handle_t,
@@ -1476,7 +1476,7 @@ unsafe extern "C" {
         phMem: *mut ur_mem_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemGetInfo(
         hMemory: ur_mem_handle_t,
         propName: ur_mem_info_t,
@@ -1485,7 +1485,7 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemImageGetInfo(
         hMemory: ur_mem_handle_t,
         propName: ur_image_info_t,
@@ -1530,20 +1530,20 @@ pub struct ur_sampler_desc_t {
     pub addressingMode: ur_sampler_addressing_mode_t,
     pub filterMode: ur_sampler_filter_mode_t,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urSamplerCreate(
         hContext: ur_context_handle_t,
         pDesc: *const ur_sampler_desc_t,
         phSampler: *mut ur_sampler_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urSamplerRetain(hSampler: ur_sampler_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urSamplerRelease(hSampler: ur_sampler_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urSamplerGetInfo(
         hSampler: ur_sampler_handle_t,
         propName: ur_sampler_info_t,
@@ -1552,7 +1552,7 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urSamplerGetNativeHandle(
         hSampler: ur_sampler_handle_t,
         phNativeSampler: *mut ur_native_handle_t,
@@ -1565,7 +1565,7 @@ pub struct ur_sampler_native_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub isNativeHandleOwned: bool,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urSamplerCreateWithNativeHandle(
         hNativeSampler: ur_native_handle_t,
         hContext: ur_context_handle_t,
@@ -1690,7 +1690,7 @@ pub struct ur_usm_pool_limits_desc_t {
     pub maxPoolableSize: usize,
     pub minDriverAllocSize: usize,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMHostAlloc(
         hContext: ur_context_handle_t,
         pUSMDesc: *const ur_usm_desc_t,
@@ -1699,7 +1699,7 @@ unsafe extern "C" {
         ppMem: *mut *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMDeviceAlloc(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -1709,7 +1709,7 @@ unsafe extern "C" {
         ppMem: *mut *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMSharedAlloc(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -1719,13 +1719,13 @@ unsafe extern "C" {
         ppMem: *mut *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMFree(
         hContext: ur_context_handle_t,
         pMem: *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMGetMemAllocInfo(
         hContext: ur_context_handle_t,
         pMem: *const ::core::ffi::c_void,
@@ -1735,17 +1735,17 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolCreate(
         hContext: ur_context_handle_t,
         pPoolDesc: *mut ur_usm_pool_desc_t,
         ppPool: *mut ur_usm_pool_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolRetain(pPool: ur_usm_pool_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolRelease(pPool: ur_usm_pool_handle_t) -> ur_result_t;
 }
 #[repr(u32)]
@@ -1761,7 +1761,7 @@ pub enum ur_usm_pool_info_t {
     UR_USM_POOL_INFO_USED_HIGH_EXP = 8277,
     UR_USM_POOL_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolGetInfo(
         hPool: ur_usm_pool_handle_t,
         propName: ur_usm_pool_info_t,
@@ -1777,7 +1777,7 @@ pub enum ur_virtual_mem_granularity_info_t {
     UR_VIRTUAL_MEM_GRANULARITY_INFO_RECOMMENDED = 196865,
     UR_VIRTUAL_MEM_GRANULARITY_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urVirtualMemGranularityGetInfo(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -1788,7 +1788,7 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urVirtualMemReserve(
         hContext: ur_context_handle_t,
         pStart: *const ::core::ffi::c_void,
@@ -1796,7 +1796,7 @@ unsafe extern "C" {
         ppStart: *mut *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urVirtualMemFree(
         hContext: ur_context_handle_t,
         pStart: *const ::core::ffi::c_void,
@@ -1812,7 +1812,7 @@ pub enum ur_virtual_mem_access_flag_t {
     UR_VIRTUAL_MEM_ACCESS_FLAG_READ_ONLY = 4,
     UR_VIRTUAL_MEM_ACCESS_FLAG_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urVirtualMemMap(
         hContext: ur_context_handle_t,
         pStart: *const ::core::ffi::c_void,
@@ -1822,14 +1822,14 @@ unsafe extern "C" {
         flags: ur_virtual_mem_access_flags_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urVirtualMemUnmap(
         hContext: ur_context_handle_t,
         pStart: *const ::core::ffi::c_void,
         size: usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urVirtualMemSetAccess(
         hContext: ur_context_handle_t,
         pStart: *const ::core::ffi::c_void,
@@ -1843,7 +1843,7 @@ pub enum ur_virtual_mem_info_t {
     UR_VIRTUAL_MEM_INFO_ACCESS_MODE = 0,
     UR_VIRTUAL_MEM_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urVirtualMemGetInfo(
         hContext: ur_context_handle_t,
         pStart: *const ::core::ffi::c_void,
@@ -1868,7 +1868,7 @@ pub struct ur_physical_mem_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub flags: ur_physical_mem_flags_t,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urPhysicalMemCreate(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -1877,10 +1877,10 @@ unsafe extern "C" {
         phPhysicalMem: *mut ur_physical_mem_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urPhysicalMemRetain(hPhysicalMem: ur_physical_mem_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urPhysicalMemRelease(hPhysicalMem: ur_physical_mem_handle_t) -> ur_result_t;
 }
 #[repr(u32)]
@@ -1893,7 +1893,7 @@ pub enum ur_physical_mem_info_t {
     UR_PHYSICAL_MEM_INFO_REFERENCE_COUNT = 4,
     UR_PHYSICAL_MEM_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urPhysicalMemGetInfo(
         hPhysicalMem: ur_physical_mem_handle_t,
         propName: ur_physical_mem_info_t,
@@ -1935,7 +1935,7 @@ pub struct ur_program_properties_t {
     pub count: u32,
     pub pMetadatas: *const ur_program_metadata_t,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramCreateWithIL(
         hContext: ur_context_handle_t,
         pIL: *const ::core::ffi::c_void,
@@ -1944,7 +1944,7 @@ unsafe extern "C" {
         phProgram: *mut ur_program_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramCreateWithBinary(
         hContext: ur_context_handle_t,
         numDevices: u32,
@@ -1955,21 +1955,21 @@ unsafe extern "C" {
         phProgram: *mut ur_program_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramBuild(
         hContext: ur_context_handle_t,
         hProgram: ur_program_handle_t,
         pOptions: *const ::core::ffi::c_char,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramCompile(
         hContext: ur_context_handle_t,
         hProgram: ur_program_handle_t,
         pOptions: *const ::core::ffi::c_char,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramLink(
         hContext: ur_context_handle_t,
         count: u32,
@@ -1978,13 +1978,13 @@ unsafe extern "C" {
         phProgram: *mut ur_program_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramRetain(hProgram: ur_program_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramRelease(hProgram: ur_program_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramGetFunctionPointer(
         hDevice: ur_device_handle_t,
         hProgram: ur_program_handle_t,
@@ -1992,7 +1992,7 @@ unsafe extern "C" {
         ppFunctionPointer: *mut *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramGetGlobalVariablePointer(
         hDevice: ur_device_handle_t,
         hProgram: ur_program_handle_t,
@@ -2015,7 +2015,7 @@ pub enum ur_program_info_t {
     UR_PROGRAM_INFO_KERNEL_NAMES = 8,
     UR_PROGRAM_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramGetInfo(
         hProgram: ur_program_handle_t,
         propName: ur_program_info_t,
@@ -2051,7 +2051,7 @@ pub enum ur_program_build_info_t {
     UR_PROGRAM_BUILD_INFO_BINARY_TYPE = 3,
     UR_PROGRAM_BUILD_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramGetBuildInfo(
         hProgram: ur_program_handle_t,
         hDevice: ur_device_handle_t,
@@ -2068,14 +2068,14 @@ pub struct ur_specialization_constant_info_t {
     pub size: usize,
     pub pValue: *const ::core::ffi::c_void,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramSetSpecializationConstants(
         hProgram: ur_program_handle_t,
         count: u32,
         pSpecConstants: *const ur_specialization_constant_info_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramGetNativeHandle(
         hProgram: ur_program_handle_t,
         phNativeProgram: *mut ur_native_handle_t,
@@ -2088,7 +2088,7 @@ pub struct ur_program_native_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub isNativeHandleOwned: bool,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramCreateWithNativeHandle(
         hNativeProgram: ur_native_handle_t,
         hContext: ur_context_handle_t,
@@ -2126,7 +2126,7 @@ pub enum ur_queue_flag_t {
     UR_QUEUE_FLAG_LOW_POWER_EVENTS_SUPPORT_EXP = 2048,
     UR_QUEUE_FLAG_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueGetInfo(
         hQueue: ur_queue_handle_t,
         propName: ur_queue_info_t,
@@ -2149,7 +2149,7 @@ pub struct ur_queue_index_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub computeIndex: u32,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueCreate(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -2157,10 +2157,10 @@ unsafe extern "C" {
         phQueue: *mut ur_queue_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueRetain(hQueue: ur_queue_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueRelease(hQueue: ur_queue_handle_t) -> ur_result_t;
 }
 #[repr(C)]
@@ -2170,7 +2170,7 @@ pub struct ur_queue_native_desc_t {
     pub pNext: *const ::core::ffi::c_void,
     pub pNativeData: *mut ::core::ffi::c_void,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueGetNativeHandle(
         hQueue: ur_queue_handle_t,
         pDesc: *mut ur_queue_native_desc_t,
@@ -2184,7 +2184,7 @@ pub struct ur_queue_native_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub isNativeHandleOwned: bool,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueCreateWithNativeHandle(
         hNativeQueue: ur_native_handle_t,
         hContext: ur_context_handle_t,
@@ -2193,10 +2193,10 @@ unsafe extern "C" {
         phQueue: *mut ur_queue_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueFinish(hQueue: ur_queue_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueFlush(hQueue: ur_queue_handle_t) -> ur_result_t;
 }
 #[repr(u32)]
@@ -2270,7 +2270,7 @@ pub enum ur_profiling_info_t {
     UR_PROFILING_INFO_COMMAND_COMPLETE = 4,
     UR_PROFILING_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEventGetInfo(
         hEvent: ur_event_handle_t,
         propName: ur_event_info_t,
@@ -2279,7 +2279,7 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEventGetProfilingInfo(
         hEvent: ur_event_handle_t,
         propName: ur_profiling_info_t,
@@ -2288,19 +2288,19 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEventWait(
         numEvents: u32,
         phEventWaitList: *const ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEventRetain(hEvent: ur_event_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEventRelease(hEvent: ur_event_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEventGetNativeHandle(
         hEvent: ur_event_handle_t,
         phNativeEvent: *mut ur_native_handle_t,
@@ -2313,7 +2313,7 @@ pub struct ur_event_native_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub isNativeHandleOwned: bool,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEventCreateWithNativeHandle(
         hNativeEvent: ur_native_handle_t,
         hContext: ur_context_handle_t,
@@ -2337,7 +2337,7 @@ pub type ur_event_callback_t = ::core::option::Option<
         pUserData: *mut ::core::ffi::c_void,
     ),
 >;
-unsafe extern "C" {
+extern "C" {
     pub fn urEventSetCallback(
         hEvent: ur_event_handle_t,
         execStatus: ur_execution_info_t,
@@ -2374,7 +2374,7 @@ pub struct ur_kernel_launch_workgroup_property_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub workgroup_mem_size: usize,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueKernelLaunch(
         hQueue: ur_queue_handle_t,
         hKernel: ur_kernel_handle_t,
@@ -2388,7 +2388,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueEventsWait(
         hQueue: ur_queue_handle_t,
         numEventsInWaitList: u32,
@@ -2396,7 +2396,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueEventsWaitWithBarrier(
         hQueue: ur_queue_handle_t,
         numEventsInWaitList: u32,
@@ -2404,7 +2404,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemBufferRead(
         hQueue: ur_queue_handle_t,
         hBuffer: ur_mem_handle_t,
@@ -2417,7 +2417,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemBufferWrite(
         hQueue: ur_queue_handle_t,
         hBuffer: ur_mem_handle_t,
@@ -2430,7 +2430,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemBufferReadRect(
         hQueue: ur_queue_handle_t,
         hBuffer: ur_mem_handle_t,
@@ -2448,7 +2448,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemBufferWriteRect(
         hQueue: ur_queue_handle_t,
         hBuffer: ur_mem_handle_t,
@@ -2466,7 +2466,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemBufferCopy(
         hQueue: ur_queue_handle_t,
         hBufferSrc: ur_mem_handle_t,
@@ -2479,7 +2479,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemBufferCopyRect(
         hQueue: ur_queue_handle_t,
         hBufferSrc: ur_mem_handle_t,
@@ -2496,7 +2496,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemBufferFill(
         hQueue: ur_queue_handle_t,
         hBuffer: ur_mem_handle_t,
@@ -2509,7 +2509,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemImageRead(
         hQueue: ur_queue_handle_t,
         hImage: ur_mem_handle_t,
@@ -2524,7 +2524,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemImageWrite(
         hQueue: ur_queue_handle_t,
         hImage: ur_mem_handle_t,
@@ -2539,7 +2539,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemImageCopy(
         hQueue: ur_queue_handle_t,
         hImageSrc: ur_mem_handle_t,
@@ -2569,7 +2569,7 @@ pub enum ur_usm_migration_flag_t {
     UR_USM_MIGRATION_FLAG_DEVICE_TO_HOST = 2,
     UR_USM_MIGRATION_FLAG_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemBufferMap(
         hQueue: ur_queue_handle_t,
         hBuffer: ur_mem_handle_t,
@@ -2583,7 +2583,7 @@ unsafe extern "C" {
         ppRetMap: *mut *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueMemUnmap(
         hQueue: ur_queue_handle_t,
         hMem: ur_mem_handle_t,
@@ -2593,7 +2593,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueUSMFill(
         hQueue: ur_queue_handle_t,
         pMem: *mut ::core::ffi::c_void,
@@ -2605,7 +2605,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueUSMMemcpy(
         hQueue: ur_queue_handle_t,
         blocking: bool,
@@ -2617,7 +2617,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueUSMPrefetch(
         hQueue: ur_queue_handle_t,
         pMem: *const ::core::ffi::c_void,
@@ -2628,7 +2628,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueUSMAdvise(
         hQueue: ur_queue_handle_t,
         pMem: *const ::core::ffi::c_void,
@@ -2637,7 +2637,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueUSMFill2D(
         hQueue: ur_queue_handle_t,
         pMem: *mut ::core::ffi::c_void,
@@ -2651,7 +2651,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueUSMMemcpy2D(
         hQueue: ur_queue_handle_t,
         blocking: bool,
@@ -2666,7 +2666,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueDeviceGlobalVariableWrite(
         hQueue: ur_queue_handle_t,
         hProgram: ur_program_handle_t,
@@ -2680,7 +2680,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueDeviceGlobalVariableRead(
         hQueue: ur_queue_handle_t,
         hProgram: ur_program_handle_t,
@@ -2694,7 +2694,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueReadHostPipe(
         hQueue: ur_queue_handle_t,
         hProgram: ur_program_handle_t,
@@ -2707,7 +2707,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueWriteHostPipe(
         hQueue: ur_queue_handle_t,
         hProgram: ur_program_handle_t,
@@ -2754,7 +2754,7 @@ pub struct ur_exp_kernel_arg_properties_t {
     pub size: usize,
     pub value: ur_exp_kernel_arg_value_t,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueKernelLaunchWithArgsExp(
         hQueue: ur_queue_handle_t,
         hKernel: ur_kernel_handle_t,
@@ -2770,7 +2770,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelCreate(
         hProgram: ur_program_handle_t,
         pKernelName: *const ::core::ffi::c_char,
@@ -2783,7 +2783,7 @@ pub struct ur_kernel_arg_value_properties_t {
     pub stype: ur_structure_type_t,
     pub pNext: *mut ::core::ffi::c_void,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelSetArgValue(
         hKernel: ur_kernel_handle_t,
         argIndex: u32,
@@ -2798,7 +2798,7 @@ pub struct ur_kernel_arg_local_properties_t {
     pub stype: ur_structure_type_t,
     pub pNext: *mut ::core::ffi::c_void,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelSetArgLocal(
         hKernel: ur_kernel_handle_t,
         argIndex: u32,
@@ -2857,7 +2857,7 @@ pub enum ur_kernel_exec_info_t {
     UR_KERNEL_EXEC_INFO_CACHE_CONFIG = 2,
     UR_KERNEL_EXEC_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelGetInfo(
         hKernel: ur_kernel_handle_t,
         propName: ur_kernel_info_t,
@@ -2866,7 +2866,7 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelGetGroupInfo(
         hKernel: ur_kernel_handle_t,
         hDevice: ur_device_handle_t,
@@ -2876,7 +2876,7 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelGetSubGroupInfo(
         hKernel: ur_kernel_handle_t,
         hDevice: ur_device_handle_t,
@@ -2886,10 +2886,10 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelRetain(hKernel: ur_kernel_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelRelease(hKernel: ur_kernel_handle_t) -> ur_result_t;
 }
 #[repr(C)]
@@ -2898,7 +2898,7 @@ pub struct ur_kernel_arg_pointer_properties_t {
     pub stype: ur_structure_type_t,
     pub pNext: *mut ::core::ffi::c_void,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelSetArgPointer(
         hKernel: ur_kernel_handle_t,
         argIndex: u32,
@@ -2912,7 +2912,7 @@ pub struct ur_kernel_exec_info_properties_t {
     pub stype: ur_structure_type_t,
     pub pNext: *mut ::core::ffi::c_void,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelSetExecInfo(
         hKernel: ur_kernel_handle_t,
         propName: ur_kernel_exec_info_t,
@@ -2927,7 +2927,7 @@ pub struct ur_kernel_arg_sampler_properties_t {
     pub stype: ur_structure_type_t,
     pub pNext: *mut ::core::ffi::c_void,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelSetArgSampler(
         hKernel: ur_kernel_handle_t,
         argIndex: u32,
@@ -2942,7 +2942,7 @@ pub struct ur_kernel_arg_mem_obj_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub memoryAccess: ur_mem_flags_t,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelSetArgMemObj(
         hKernel: ur_kernel_handle_t,
         argIndex: u32,
@@ -2950,14 +2950,14 @@ unsafe extern "C" {
         hArgValue: ur_mem_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelSetSpecializationConstants(
         hKernel: ur_kernel_handle_t,
         count: u32,
         pSpecConstants: *const ur_specialization_constant_info_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelGetNativeHandle(
         hKernel: ur_kernel_handle_t,
         phNativeKernel: *mut ur_native_handle_t,
@@ -2970,7 +2970,7 @@ pub struct ur_kernel_native_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub isNativeHandleOwned: bool,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelCreateWithNativeHandle(
         hNativeKernel: ur_native_handle_t,
         hContext: ur_context_handle_t,
@@ -2979,7 +2979,7 @@ unsafe extern "C" {
         phKernel: *mut ur_kernel_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelGetSuggestedLocalWorkSize(
         hKernel: ur_kernel_handle_t,
         hQueue: ur_queue_handle_t,
@@ -2989,7 +2989,7 @@ unsafe extern "C" {
         pSuggestedLocalWorkSize: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urKernelSuggestMaxCooperativeGroupCount(
         hKernel: ur_kernel_handle_t,
         hDevice: ur_device_handle_t,
@@ -3031,7 +3031,7 @@ pub struct ur_usm_pool_buffer_desc_t {
     pub memType: ur_usm_type_t,
     pub device: ur_device_handle_t,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueUSMDeviceAllocExp(
         hQueue: ur_queue_handle_t,
         pPool: ur_usm_pool_handle_t,
@@ -3043,7 +3043,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueUSMSharedAllocExp(
         hQueue: ur_queue_handle_t,
         pPool: ur_usm_pool_handle_t,
@@ -3055,7 +3055,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueUSMHostAllocExp(
         hQueue: ur_queue_handle_t,
         pPool: ur_usm_pool_handle_t,
@@ -3067,7 +3067,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueUSMFreeExp(
         hQueue: ur_queue_handle_t,
         pPool: ur_usm_pool_handle_t,
@@ -3077,7 +3077,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolCreateExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3085,21 +3085,21 @@ unsafe extern "C" {
         pPool: *mut ur_usm_pool_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolDestroyExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         hPool: ur_usm_pool_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolGetDefaultDevicePoolExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         pPool: *mut ur_usm_pool_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolGetInfoExp(
         hPool: ur_usm_pool_handle_t,
         propName: ur_usm_pool_info_t,
@@ -3107,7 +3107,7 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolSetInfoExp(
         hPool: ur_usm_pool_handle_t,
         propName: ur_usm_pool_info_t,
@@ -3115,21 +3115,21 @@ unsafe extern "C" {
         propSize: usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolSetDevicePoolExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         hPool: ur_usm_pool_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolGetDevicePoolExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         pPool: *mut ur_usm_pool_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPoolTrimToExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3263,7 +3263,7 @@ pub struct ur_exp_image_copy_region_t {
     pub dstOffset: ur_rect_offset_t,
     pub copyExtent: ur_rect_region_t,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMPitchedAllocExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3276,21 +3276,21 @@ unsafe extern "C" {
         pResultPitch: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesUnsampledImageHandleDestroyExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         hImage: ur_exp_image_native_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesSampledImageHandleDestroyExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         hImage: ur_exp_image_native_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesImageAllocateExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3299,14 +3299,14 @@ unsafe extern "C" {
         phImageMem: *mut ur_exp_image_mem_native_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesImageFreeExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         hImageMem: ur_exp_image_mem_native_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesUnsampledImageCreateExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3316,7 +3316,7 @@ unsafe extern "C" {
         phImage: *mut ur_exp_image_native_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesSampledImageCreateExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3327,7 +3327,7 @@ unsafe extern "C" {
         phImage: *mut ur_exp_image_native_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesImageCopyExp(
         hQueue: ur_queue_handle_t,
         pSrc: *const ::core::ffi::c_void,
@@ -3344,7 +3344,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesImageGetInfoExp(
         hContext: ur_context_handle_t,
         hImageMem: ur_exp_image_mem_native_handle_t,
@@ -3353,7 +3353,7 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesGetImageMemoryHandleTypeSupportExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3363,7 +3363,7 @@ unsafe extern "C" {
         pSupportedRet: *mut ur_bool_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesGetImageUnsampledHandleSupportExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3373,7 +3373,7 @@ unsafe extern "C" {
         pSupportedRet: *mut ur_bool_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesGetImageSampledHandleSupportExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3383,7 +3383,7 @@ unsafe extern "C" {
         pSupportedRet: *mut ur_bool_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesMipmapGetLevelExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3392,14 +3392,14 @@ unsafe extern "C" {
         phImageMem: *mut ur_exp_image_mem_native_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesMipmapFreeExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         hMem: ur_exp_image_mem_native_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesImportExternalMemoryExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3409,7 +3409,7 @@ unsafe extern "C" {
         phExternalMem: *mut ur_exp_external_mem_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesMapExternalArrayExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3419,7 +3419,7 @@ unsafe extern "C" {
         phImageMem: *mut ur_exp_image_mem_native_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesMapExternalLinearMemoryExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3429,28 +3429,28 @@ unsafe extern "C" {
         ppRetMem: *mut *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesReleaseExternalMemoryExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         hExternalMem: ur_exp_external_mem_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesFreeMappedLinearMemoryExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         pMem: *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesSupportsImportingHandleTypeExp(
         hDevice: ur_device_handle_t,
         memHandleType: ur_exp_external_mem_type_t,
         pSupportedRet: *mut ur_bool_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesImportExternalSemaphoreExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3459,14 +3459,14 @@ unsafe extern "C" {
         phExternalSemaphore: *mut ur_exp_external_semaphore_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesReleaseExternalSemaphoreExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         hExternalSemaphore: ur_exp_external_semaphore_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesWaitExternalSemaphoreExp(
         hQueue: ur_queue_handle_t,
         hSemaphore: ur_exp_external_semaphore_handle_t,
@@ -3477,7 +3477,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urBindlessImagesSignalExternalSemaphoreExp(
         hQueue: ur_queue_handle_t,
         hSemaphore: ur_exp_external_semaphore_handle_t,
@@ -3488,17 +3488,17 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urDeviceWaitExp(hDevice: ur_device_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramDynamicLinkExp(
         hContext: ur_context_handle_t,
         count: u32,
         phPrograms: *const ur_program_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueTimestampRecordingExp(
         hQueue: ur_queue_handle_t,
         blocking: bool,
@@ -3507,7 +3507,7 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urIPCGetMemHandleExp(
         hContext: ur_context_handle_t,
         pMem: *mut ::core::ffi::c_void,
@@ -3515,13 +3515,13 @@ unsafe extern "C" {
         pIPCMemHandleDataSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urIPCPutMemHandleExp(
         hContext: ur_context_handle_t,
         pIPCMemHandleData: *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urIPCOpenMemHandleExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3530,13 +3530,13 @@ unsafe extern "C" {
         ppMem: *mut *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urIPCCloseMemHandleExp(
         hContext: ur_context_handle_t,
         pMem: *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemoryExportAllocExportableMemoryExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3546,14 +3546,14 @@ unsafe extern "C" {
         ppMem: *mut *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemoryExportFreeExportableMemoryExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
         pMem: *mut ::core::ffi::c_void,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urMemoryExportExportMemoryHandleExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3569,7 +3569,7 @@ pub enum ur_exp_program_flag_t {
     UR_EXP_PROGRAM_FLAG_ALLOW_UNRESOLVED_SYMBOLS = 1,
     UR_EXP_PROGRAM_FLAG_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramBuildExp(
         hProgram: ur_program_handle_t,
         numDevices: u32,
@@ -3578,7 +3578,7 @@ unsafe extern "C" {
         pOptions: *const ::core::ffi::c_char,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramCompileExp(
         hProgram: ur_program_handle_t,
         numDevices: u32,
@@ -3587,7 +3587,7 @@ unsafe extern "C" {
         pOptions: *const ::core::ffi::c_char,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urProgramLinkExp(
         hContext: ur_context_handle_t,
         numDevices: u32,
@@ -3599,7 +3599,7 @@ unsafe extern "C" {
         phProgram: *mut ur_program_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMContextMemcpyExp(
         hContext: ur_context_handle_t,
         pDst: *mut ::core::ffi::c_void,
@@ -3607,14 +3607,14 @@ unsafe extern "C" {
         size: usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMImportExp(
         hContext: ur_context_handle_t,
         pMem: *mut ::core::ffi::c_void,
         size: usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUSMReleaseExp(
         hContext: ur_context_handle_t,
         pMem: *mut ::core::ffi::c_void,
@@ -3627,19 +3627,19 @@ pub enum ur_exp_peer_info_t {
     UR_EXP_PEER_INFO_UR_PEER_ATOMICS_SUPPORT = 1,
     UR_EXP_PEER_INFO_FORCE_UINT32 = 2147483647,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUsmP2PEnablePeerAccessExp(
         commandDevice: ur_device_handle_t,
         peerDevice: ur_device_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUsmP2PDisablePeerAccessExp(
         commandDevice: ur_device_handle_t,
         peerDevice: ur_device_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urUsmP2PPeerAccessGetInfoExp(
         commandDevice: ur_device_handle_t,
         peerDevice: ur_device_handle_t,
@@ -3742,7 +3742,7 @@ pub struct ur_exp_command_buffer_update_kernel_launch_desc_t {
     pub pNewGlobalWorkSize: *mut usize,
     pub pNewLocalWorkSize: *mut usize,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferCreateExp(
         hContext: ur_context_handle_t,
         hDevice: ur_device_handle_t,
@@ -3750,22 +3750,22 @@ unsafe extern "C" {
         phCommandBuffer: *mut ur_exp_command_buffer_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferRetainExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferReleaseExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferFinalizeExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendKernelLaunchExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         hKernel: ur_kernel_handle_t,
@@ -3784,7 +3784,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendKernelLaunchWithArgsExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         hKernel: ur_kernel_handle_t,
@@ -3805,7 +3805,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendUSMMemcpyExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         pDst: *mut ::core::ffi::c_void,
@@ -3820,7 +3820,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendUSMFillExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         pMemory: *mut ::core::ffi::c_void,
@@ -3836,7 +3836,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendMemBufferCopyExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         hSrcMem: ur_mem_handle_t,
@@ -3853,7 +3853,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendMemBufferWriteExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         hBuffer: ur_mem_handle_t,
@@ -3869,7 +3869,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendMemBufferReadExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         hBuffer: ur_mem_handle_t,
@@ -3885,7 +3885,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendMemBufferCopyRectExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         hSrcMem: ur_mem_handle_t,
@@ -3906,7 +3906,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendMemBufferWriteRectExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         hBuffer: ur_mem_handle_t,
@@ -3927,7 +3927,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendMemBufferReadRectExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         hBuffer: ur_mem_handle_t,
@@ -3948,7 +3948,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendMemBufferFillExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         hBuffer: ur_mem_handle_t,
@@ -3965,7 +3965,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendUSMPrefetchExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         pMemory: *const ::core::ffi::c_void,
@@ -3980,7 +3980,7 @@ unsafe extern "C" {
         phCommand: *mut ur_exp_command_buffer_command_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendUSMAdviseExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         pMemory: *const ::core::ffi::c_void,
@@ -3998,7 +3998,7 @@ unsafe extern "C" {
 pub type ur_exp_command_buffer_native_command_function_t = ::core::option::Option<
     unsafe extern "C" fn(pUserData: *mut ::core::ffi::c_void),
 >;
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferAppendNativeCommandExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         pfnNativeCommand: ur_exp_command_buffer_native_command_function_t,
@@ -4009,7 +4009,7 @@ unsafe extern "C" {
         pSyncPoint: *mut ur_exp_command_buffer_sync_point_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueCommandBufferExp(
         hQueue: ur_queue_handle_t,
         hCommandBuffer: ur_exp_command_buffer_handle_t,
@@ -4018,27 +4018,27 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferUpdateKernelLaunchExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         numKernelUpdates: u32,
         pUpdateKernelLaunch: *const ur_exp_command_buffer_update_kernel_launch_desc_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferUpdateSignalEventExp(
         hCommand: ur_exp_command_buffer_command_handle_t,
         phSignalEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferUpdateWaitEventsExp(
         hCommand: ur_exp_command_buffer_command_handle_t,
         numEventsInWaitList: u32,
         phEventWaitList: *const ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferGetInfoExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         propName: ur_exp_command_buffer_info_t,
@@ -4047,7 +4047,7 @@ unsafe extern "C" {
         pPropSizeRet: *mut usize,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urCommandBufferGetNativeHandleExp(
         hCommandBuffer: ur_exp_command_buffer_handle_t,
         phNativeCommandBuffer: *mut ur_native_handle_t,
@@ -4070,7 +4070,7 @@ pub struct ur_exp_host_task_properties_t {
 pub type ur_exp_host_task_function_t = ::core::option::Option<
     unsafe extern "C" fn(pfnHostTask: *mut ::core::ffi::c_void),
 >;
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueHostTaskExp(
         hQueue: ur_queue_handle_t,
         pfnHostTask: ur_exp_host_task_function_t,
@@ -4095,7 +4095,7 @@ pub struct ur_exp_enqueue_ext_properties_t {
     pub pNext: *mut ::core::ffi::c_void,
     pub flags: ur_exp_enqueue_ext_flags_t,
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueEventsWaitWithBarrierExt(
         hQueue: ur_queue_handle_t,
         pProperties: *const ur_exp_enqueue_ext_properties_t,
@@ -4121,7 +4121,7 @@ pub struct ur_exp_enqueue_native_command_properties_t {
 pub type ur_exp_enqueue_native_command_function_t = ::core::option::Option<
     unsafe extern "C" fn(hQueue: ur_queue_handle_t, pUserData: *mut ::core::ffi::c_void),
 >;
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueNativeCommandExp(
         hQueue: ur_queue_handle_t,
         pfnNativeEnqueue: ur_exp_enqueue_native_command_function_t,
@@ -4146,34 +4146,34 @@ pub struct ur_exp_executable_graph_handle_t_ {
     _unused: [u8; 0],
 }
 pub type ur_exp_executable_graph_handle_t = *mut ur_exp_executable_graph_handle_t_;
-unsafe extern "C" {
+extern "C" {
     pub fn urGraphCreateExp(
         hContext: ur_context_handle_t,
         phGraph: *mut ur_exp_graph_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueBeginGraphCaptureExp(hQueue: ur_queue_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueBeginCaptureIntoGraphExp(
         hQueue: ur_queue_handle_t,
         hGraph: ur_exp_graph_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueEndGraphCaptureExp(
         hQueue: ur_queue_handle_t,
         phGraph: *mut ur_exp_graph_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urGraphInstantiateGraphExp(
         hGraph: ur_exp_graph_handle_t,
         phExecGraph: *mut ur_exp_executable_graph_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urEnqueueGraphExp(
         hQueue: ur_queue_handle_t,
         hGraph: ur_exp_executable_graph_handle_t,
@@ -4182,27 +4182,27 @@ unsafe extern "C" {
         phEvent: *mut ur_event_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urGraphDestroyExp(hGraph: ur_exp_graph_handle_t) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urGraphExecutableGraphDestroyExp(
         hExecutableGraph: ur_exp_executable_graph_handle_t,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urQueueIsGraphCaptureEnabledExp(
         hQueue: ur_queue_handle_t,
         pResult: *mut bool,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urGraphIsEmptyExp(
         hGraph: ur_exp_graph_handle_t,
         pResult: *mut bool,
     ) -> ur_result_t;
 }
-unsafe extern "C" {
+extern "C" {
     pub fn urGraphDumpContentsExp(
         hGraph: ur_exp_graph_handle_t,
         filePath: *const ::core::ffi::c_char,

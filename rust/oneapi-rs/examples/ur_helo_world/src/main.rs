@@ -1,4 +1,5 @@
-use std::env;
+#[path = "../../../oneapi_helper.rs"]
+mod oneapi_helper;
 
 use oneapi_rs::unified_runtime::{
     result::{self, UnifiedRuntimeError},
@@ -20,14 +21,7 @@ fn format_ur_error(error: UnifiedRuntimeError, call: &str) -> String {
 }
 
 fn run() -> Result<(), String> {
-    if env::var_os("UR_ADAPTERS_SEARCH_PATH")
-        .as_deref()
-        .is_none_or(|value| value.is_empty())
-    {
-        eprintln!(
-            "UR_ADAPTERS_SEARCH_PATH is not set. Point it at the Unified Runtime lib directory if adapter discovery fails."
-        );
-    }
+    oneapi_helper::configure_runtime_environment();
 
     result::loader::init(0).map_err(|error| format_ur_error(error, "urLoaderInit"))?;
 

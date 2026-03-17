@@ -8,25 +8,20 @@ use std::{
     time::{SystemTime, UNIX_EPOCH},
 };
 
+#[path = "../../../oneapi_helper.rs"]
+mod oneapi_helper;
+
 use oneapi_rs::unified_runtime::{
     result::UnifiedRuntimeError,
     safe::{Context, Queue},
     sys,
 };
 
-const OCLOC_PATH: &str = "/home/rrudnick/oneapi_2026.0.0.391/vtune/2026.0/bin64/gma/GTPin/Profilers/ocloc/Bin/intel64/ocloc";
 const DEFAULT_OCLOC_DEVICE: &str = "pvc";
 const KERNEL_NAME: &str = "sin_kernel";
 
 fn main() {
-    if env::var_os("UR_ADAPTERS_SEARCH_PATH")
-        .as_deref()
-        .is_none_or(|value| value.is_empty())
-    {
-        eprintln!(
-            "UR_ADAPTERS_SEARCH_PATH is not set. Point it at the Unified Runtime lib directory if adapter discovery fails."
-        );
-    }
+    oneapi_helper::configure_level_zero_runtime_environment();
 
     if let Err(error) = run() {
         eprintln!("{error}");
@@ -98,10 +93,7 @@ fn run() -> Result<(), String> {
 }
 
 fn compile_opencl_to_spirv() -> Result<Vec<u8>, String> {
-    let ocloc_path = PathBuf::from(OCLOC_PATH);
-    if !ocloc_path.is_file() {
-        return Err(format!("ocloc not found at {}", ocloc_path.display()));
-    }
+    let ocloc_path = oneapi_helper::resolve_ocloc_path()?;
 
     let source_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("sin.cl");
     let out_dir = make_temp_dir("oneapi-rs-launch-kernel")?;
@@ -122,7 +114,10 @@ fn compile_opencl_to_spirv() -> Result<Vec<u8>, String> {
         .arg(output_base)
         .arg("-out_dir")
         .arg(&out_dir)
-        .env("LD_LIBRARY_PATH", join_library_path(library_dir));
+        .env(
+            "LD_LIBRARY_PATH",
+            oneapi_helper::join_env_path("LD_LIBRARY_PATH", library_dir),
+        );
 
     let output = command
         .output()
@@ -180,19 +175,6 @@ fn make_temp_dir(prefix: &str) -> Result<PathBuf, String> {
     fs::create_dir_all(&dir)
         .map_err(|error| format!("failed to create {}: {error}", dir.display()))?;
     Ok(dir)
-}
-
-fn join_library_path(extra_dir: &Path) -> String {
-    match env::var_os("LD_LIBRARY_PATH") {
-        Some(existing) if !existing.is_empty() => {
-            format!(
-                "{}:{}",
-                extra_dir.display(),
-                PathBuf::from(existing).display()
-            )
-        }
-        _ => extra_dir.display().to_string(),
-    }
 }
 
 fn copy_dtoh(
