@@ -429,7 +429,7 @@ impl SyclQueue {
         unsafe { self.alloc(len, sys::sycl_rs_alloc_kind_t::SYCL_RS_ALLOC_KIND_DEVICE) }
     }
 
-    pub unsafe fn alloc_zeros<T: ValidAsZeroBits>(
+    pub fn alloc_zeros<T: ValidAsZeroBits>(
         self: &Arc<Self>,
         len: usize,
     ) -> Result<SyclBuffer<T>, result::SyclError> {

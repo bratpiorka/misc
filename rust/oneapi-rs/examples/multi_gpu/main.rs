@@ -65,7 +65,7 @@ fn run() -> ExampleResult<()> {
     let copy_to_host = sycl::memcpy(&queue1, &src, staged.as_mut_slice())?;
     copy_to_host.wait()?;
 
-    let mut dst = unsafe { queue2.alloc_zeros::<u32>(size) }?;
+    let mut dst = queue2.alloc_zeros::<u32>(size)?;
     let copy_to_device = sycl::memcpy(&queue2, staged.as_slice(), &dst)?;
     copy_to_device.wait()?;
 
