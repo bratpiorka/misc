@@ -1,0 +1,94 @@
+cudarc APIs Used in KVBM Code (ai-dynamo/dynamo)
+cudarc: https://github.com/chelsea0x3b/cudarc
+
+1. cudarc::driver — High-Level Wrappers
+1	CudaContext	struct
+2	CudaStream	struct
+3	CudaSlice	struct
+4	CudaEvent	struct
+5	CudaFunction	struct
+6	CudaModule	struct (returned by load_module)
+7	DriverError	error type
+8	DevicePtr	trait/type
+9	DevicePtrMut	trait/type
+10	DeviceRepr	trait
+11	ValidAsZeroBits	trait
+12	LaunchConfig	struct
+13	PushKernelArg	trait (via launch.arg())
+14	CudaContext::new()	method
+15	CudaContext::device_count()	method
+16	CudaContext::default_stream()	method
+17	CudaContext::new_stream()	method
+18	CudaContext::ordinal()	method
+19	CudaContext::attribute()	method
+20	CudaContext::cu_device()	method
+21	CudaContext::cu_ctx()	method
+22	CudaContext::bind_to_thread()	method
+23	CudaContext::load_module()	method
+24	CudaModule::load_function()	method
+25	CudaStream::cu_stream()	method
+26	CudaStream::context()	method
+27	CudaStream::alloc()	method
+28	CudaStream::alloc_zeros()	method
+29	CudaStream::clone_htod()	method
+30	CudaStream::clone_dtoh()	method
+31	CudaStream::synchronize()	method
+32	CudaStream::record_event()	method
+33	CudaStream::launch_builder()	method
+34	CudaSlice::device_ptr()	method
+35	CudaSlice::device_ptr_mut()	method
+
+2. cudarc::driver::result — Safe FFI Wrappers
+36	malloc_sync	function
+37	free_sync	function
+38	malloc_host	function
+39	free_host	function
+40	memcpy_htod_async	function
+41	memcpy_dtoh_async	function
+42	memset_d8_async	function
+
+3. cudarc::driver::sys — Raw Driver API FFI
+43	CUcontext	type alias
+44	CUstream	type alias
+45	CUevent	type alias
+46	CUmodule	type alias
+47	CUfunction	type alias
+48	CUresult	type alias
+49	CUevent_flags	enum (CU_EVENT_BLOCKING_SYNC)
+50	cudaError_enum	enum
+51	cudaError_enum::CUDA_SUCCESS	variant
+52	cudaError_enum::CUDA_ERROR_FILE_NOT_FOUND	variant
+53	CU_MEMHOSTALLOC_WRITECOMBINED	constant
+54	CU_MEMHOSTALLOC_DEVICEMAP	constant
+55	CUmemPoolProps	struct
+56	CUmemoryPool	type alias
+57	CUmemAllocationType	enum (CU_MEM_ALLOCATION_TYPE_PINNED)
+58	CUmemLocationType	enum (CU_MEM_LOCATION_TYPE_DEVICE)
+59	CUmemPool_attribute	enum (CU_MEMPOOL_ATTR_RELEASE_THRESHOLD)
+60	CUdevice_attribute_enum	enum (CU_DEVICE_ATTRIBUTE_CLOCK_RATE, ..._COMPUTE_CAPABILITY_MAJOR, ..._COMPUTE_CAPABILITY_MINOR)
+61	cuCtxPushCurrent_v2	function
+62	cuCtxPopCurrent_v2	function
+63	cuCtxGetCurrent	function
+64	cuMemcpyHtoDAsync_v2	function
+65	cuLaunchKernel	function
+66	cuModuleLoadData	function
+67	cuModuleGetFunction	function
+68	cuEventSynchronize	function
+69	cuMemPoolCreate	function
+70	cuMemAllocFromPoolAsync	function
+71	cuMemFreeAsync	function
+72	cuMemPoolSetAttribute	function
+73	cuMemPoolDestroy	function
+74	cuStreamSynchronize	function
+
+4. cudarc::runtime::sys — Runtime API FFI
+75	cudaStream_t	type alias
+76	cudaEvent_t	type alias
+77	cudaError_t	type alias
+78	cudaError	enum (cudaSuccess)
+79	cudaMemcpyKind	enum (cudaMemcpyHostToDevice)
+80	cudaMemcpy	function
+
+5. cudarc::nvrtc — Runtime Compilation
+81	compile_ptx_with_opts	function
+82	CompileOptions	struct

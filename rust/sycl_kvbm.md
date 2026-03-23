@@ -15,7 +15,7 @@ oneapi-rs: /home/rrudnick/rust/rust/oneapi-rs
 | DevicePtr | trait/type | DevicePtr | `*const T` view over USM-backed storage | Partial | Present as a safe-layer trait and currently implemented for `SyclBuffer<T>`. |
 | DevicePtrMut | trait/type | DevicePtrMut | `*mut T` view over USM-backed storage | Partial | Present as a safe-layer trait and currently implemented for `SyclBuffer<T>`. |
 | DeviceRepr | trait | DeviceCopy | typed memcpy-compatible values | Partial | Covers copy-safe POD-style values for transfers; kernel arguments are handled separately through `SyclKernelArg`. |
-| ValidAsZeroBits | trait | None | — | Missing | No zero-init trait or alloc_zeros helper yet. |
+| ValidAsZeroBits | trait | ValidAsZeroBits | zero-initializable typed USM allocation contract | Present | Used by `SyclQueue::alloc_zeros()` to guarantee all-zero initialization is valid for the element type. |
 | LaunchConfig | struct | None | `SyclKernel::launch_1d(...)` with explicit global/local sizes | Partial | There is a direct 1D launch entrypoint, but no reusable launch-config struct. |
 | PushKernelArg | trait | SyclKernelArg | `handler::set_arg` + `raw_kernel_arg` | Partial | Typed kernel-argument builder exists as a value type, and now works naturally with `DevicePtr` / `DevicePtrMut`. |
 | CudaContext::new() | method | SyclContext::new() | `sycl::context(device)` | Present | Builds a context from a selected device. |
@@ -32,7 +32,7 @@ oneapi-rs: /home/rrudnick/rust/rust/oneapi-rs
 | CudaStream::cu_stream() | method | SyclQueue::handle() | shim-owned `sycl::queue` handle | Partial | Returns shim queue handle, not backend-native stream/queue. |
 | CudaStream::context() | method | SyclQueue::context() | wrapped `sycl::context` | Present | Accessor for owning context. |
 | CudaStream::alloc() | method | SyclQueue::alloc_device() | `sycl::malloc_device` / `sycl::aligned_alloc_device` | Present | Unsafe typed allocation helper. |
-| CudaStream::alloc_zeros() | method | None | — | Missing | No zero-fill helper yet. |
+| CudaStream::alloc_zeros() | method | SyclQueue::alloc_zeros() | `sycl::malloc_device` + `sycl::queue::memset` | Present | Device allocation followed by explicit zero-fill for `ValidAsZeroBits` element types. |
 | CudaStream::clone_htod() | method | None | use `alloc_device()` + `sycl::memcpy(...)` | Missing | Removed in favor of explicit allocation plus neutral `memcpy`. |
 | CudaStream::clone_dtoh() | method | SyclQueue::clone_dtoh() | `sycl::queue::memcpy` | Present | Copies from buffer into a new host vector convenience helper. |
 | CudaStream::synchronize() | method | SyclQueue::synchronize() | `sycl::queue::wait` | Present | Queue wait helper. |
@@ -56,9 +56,9 @@ oneapi-rs: /home/rrudnick/rust/rust/oneapi-rs
 | module/program build | function/pattern | SyclContext::load_program_from_source(), SyclQueue::load_program_from_source() | `create_kernel_bundle_from_source`, `build`, `save_log` | Partial | Runtime source compilation is supported; binary/module ingestion is not. |
 
 3. Present SYCL Surface Summary
-- High-level wrappers currently present: SyclDevice, SyclContext, SyclQueue, SyclEvent, SyclBuffer, SyclProgram, SyclKernel, SyclKernelArg, DevicePtr, DevicePtrMut, SyclError.
+- High-level wrappers currently present: SyclDevice, SyclContext, SyclQueue, SyclEvent, SyclBuffer, SyclProgram, SyclKernel, SyclKernelArg, DevicePtr, DevicePtrMut, ValidAsZeroBits, SyclError.
 - Copy API is intentionally neutral and centralized as async `sycl::memcpy(&queue, src, dst)` plus blocking `sycl::memcpy_sync(&queue, src, dst)` rather than direction-specific helpers.
-- Buffer allocation supports device, shared, and host USM via `alloc_device`, `alloc_shared`, and `alloc_host`.
+- Buffer allocation supports device, shared, and host USM via `alloc_device`, `alloc_shared`, and `alloc_host`, plus zero-initialized device allocation through `alloc_zeros`.
 - `clone_htod` has been removed in favor of explicit `alloc_device(...)` plus `sycl::memcpy(...)`; `clone_dtoh` remains as a convenience helper.
 - Runtime kernel compilation and execution are now supported through `load_program_from_source`, `create_kernel`, `SyclKernelArg`, `DevicePtr` / `DevicePtrMut`, and `launch_1d`.
 - Device discovery now includes `SyclContext::device_count()` and ordinal-based queue/context creation helpers for multi-device workflows.
@@ -69,7 +69,7 @@ oneapi-rs: /home/rrudnick/rust/rust/oneapi-rs
 - Richer kernel execution: no binary/module loading, no multi-dimensional launch helpers, no launch-config struct, and no builder-style enqueue API.
 - Device inspection: no device names, ordinal metadata, or attribute queries yet beyond the visible-device count helper.
 - Pointer ergonomics: `DevicePtr` / `DevicePtrMut` now exist for `SyclBuffer<T>`, but there are still no subview/slice abstractions or broader pointer-wrapper ecosystem comparable to cudarc.
-- Memory utilities: no `alloc_zeros`, no memset/fill helper, and no explicit free functions outside RAII drop.
+- Memory utilities: no general fill helper beyond `alloc_zeros`, and no explicit free functions outside RAII drop.
 - Native interop: current `handle()` accessors expose shim-owned opaque handles, not backend-native handles.
 
 5. Recommended Next Additions

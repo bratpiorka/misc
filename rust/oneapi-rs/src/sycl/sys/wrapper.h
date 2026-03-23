@@ -71,6 +71,8 @@ sycl_rs_result_t sycl_rs_alloc(
     void **out_ptr
 );
 sycl_rs_result_t sycl_rs_free(sycl_rs_queue_t *queue, void *ptr);
+sycl_rs_result_t sycl_rs_memset(sycl_rs_queue_t *queue, void *dst, int value,
+                                size_t bytes);
 sycl_rs_result_t sycl_rs_memcpy(
     sycl_rs_queue_t *queue,
     void *dst,

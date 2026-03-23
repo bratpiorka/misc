@@ -13,6 +13,6 @@ pub(crate) mod core;
 pub use self::core::{
     memcpy, memcpy_sync, DeviceCopy, DevicePtr, DevicePtrMut, MemcpyDestination, MemcpySource,
     SyclBuffer, SyclContext, SyclDevice, SyclEvent, SyclKernel, SyclKernelArg, SyclProgram,
-    SyclQueue,
+    SyclQueue, ValidAsZeroBits,
 };
 pub use crate::sycl::result::SyclError;

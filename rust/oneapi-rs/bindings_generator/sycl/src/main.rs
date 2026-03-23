@@ -40,7 +40,7 @@ pub mod sys;
 pub use self::safe::{
     memcpy, memcpy_sync, DeviceCopy, DevicePtr, DevicePtrMut, MemcpyDestination, MemcpySource,
     SyclBuffer, SyclContext, SyclDevice, SyclEvent, SyclKernel, SyclKernelArg, SyclProgram,
-    SyclQueue,
+    SyclQueue, ValidAsZeroBits,
 };
 "#;
 
@@ -122,7 +122,7 @@ pub(crate) mod core;
 pub use self::core::{
     memcpy, memcpy_sync, DeviceCopy, DevicePtr, DevicePtrMut, MemcpyDestination, MemcpySource,
     SyclBuffer, SyclContext, SyclDevice, SyclEvent, SyclKernel, SyclKernelArg, SyclProgram,
-    SyclQueue,
+    SyclQueue, ValidAsZeroBits,
 };
 pub use crate::sycl::result::SyclError;
 "#;
@@ -145,6 +145,8 @@ use std::{
 };
 
 pub unsafe trait DeviceCopy: Copy {}
+
+pub unsafe trait ValidAsZeroBits: DeviceCopy {}
 
 pub unsafe trait DevicePtr<T> {
     fn device_ptr(&self) -> *const T;
@@ -170,6 +172,23 @@ unsafe impl DeviceCopy for usize {}
 unsafe impl DeviceCopy for f32 {}
 unsafe impl DeviceCopy for f64 {}
 unsafe impl<T: DeviceCopy, const N: usize> DeviceCopy for [T; N] {}
+
+unsafe impl ValidAsZeroBits for bool {}
+unsafe impl ValidAsZeroBits for i8 {}
+unsafe impl ValidAsZeroBits for i16 {}
+unsafe impl ValidAsZeroBits for i32 {}
+unsafe impl ValidAsZeroBits for i64 {}
+unsafe impl ValidAsZeroBits for i128 {}
+unsafe impl ValidAsZeroBits for isize {}
+unsafe impl ValidAsZeroBits for u8 {}
+unsafe impl ValidAsZeroBits for u16 {}
+unsafe impl ValidAsZeroBits for u32 {}
+unsafe impl ValidAsZeroBits for u64 {}
+unsafe impl ValidAsZeroBits for u128 {}
+unsafe impl ValidAsZeroBits for usize {}
+unsafe impl ValidAsZeroBits for f32 {}
+unsafe impl ValidAsZeroBits for f64 {}
+unsafe impl<T: ValidAsZeroBits, const N: usize> ValidAsZeroBits for [T; N] {}
 
 pub trait MemcpySource<T> {
     fn len(&self) -> usize;
@@ -408,6 +427,16 @@ impl SyclQueue {
         len: usize,
     ) -> Result<SyclBuffer<T>, result::SyclError> {
         unsafe { self.alloc(len, sys::sycl_rs_alloc_kind_t::SYCL_RS_ALLOC_KIND_DEVICE) }
+    }
+
+    pub unsafe fn alloc_zeros<T: ValidAsZeroBits>(
+        self: &Arc<Self>,
+        len: usize,
+    ) -> Result<SyclBuffer<T>, result::SyclError> {
+        let buffer = unsafe { self.alloc_device::<T>(len)? };
+        let bytes = bytes_for_len::<T>(len)?;
+        unsafe { sys::sycl_rs_memset(self.handle, buffer.ptr.cast::<c_void>(), 0, bytes).result()? };
+        Ok(buffer)
     }
 
     pub unsafe fn alloc_shared<T>(
@@ -853,6 +882,8 @@ sycl_rs_result_t sycl_rs_alloc(
     void **out_ptr
 );
 sycl_rs_result_t sycl_rs_free(sycl_rs_queue_t *queue, void *ptr);
+sycl_rs_result_t sycl_rs_memset(sycl_rs_queue_t *queue, void *dst, int value,
+                                size_t bytes);
 sycl_rs_result_t sycl_rs_memcpy(
     sycl_rs_queue_t *queue,
     void *dst,
@@ -1167,6 +1198,20 @@ sycl_rs_result_t sycl_rs_free(sycl_rs_queue_t *queue, void *ptr) {
     }
 
     return with_exceptions([&] { sycl::free(ptr, queue->value); });
+}
+
+sycl_rs_result_t sycl_rs_memset(sycl_rs_queue_t *queue, void *dst, int value,
+                                size_t bytes) {
+    if (queue == nullptr) {
+        set_error("queue must not be null");
+        return SYCL_RS_RESULT_INVALID_ARGUMENT;
+    }
+    if (bytes > 0 && dst == nullptr) {
+        set_error("memset destination must not be null when bytes > 0");
+        return SYCL_RS_RESULT_INVALID_ARGUMENT;
+    }
+
+    return with_exceptions([&] { queue->value.memset(dst, value, bytes).wait(); });
 }
 
 sycl_rs_result_t sycl_rs_memcpy(

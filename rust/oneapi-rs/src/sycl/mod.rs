@@ -19,5 +19,5 @@ pub mod sys;
 pub use self::safe::{
     memcpy, memcpy_sync, DeviceCopy, DevicePtr, DevicePtrMut, MemcpyDestination, MemcpySource,
     SyclBuffer, SyclContext, SyclDevice, SyclEvent, SyclKernel, SyclKernelArg, SyclProgram,
-    SyclQueue,
+    SyclQueue, ValidAsZeroBits,
 };

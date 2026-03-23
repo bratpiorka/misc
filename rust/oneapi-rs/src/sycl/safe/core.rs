@@ -17,6 +17,8 @@ use std::{
 
 pub unsafe trait DeviceCopy: Copy {}
 
+pub unsafe trait ValidAsZeroBits: DeviceCopy {}
+
 pub unsafe trait DevicePtr<T> {
     fn device_ptr(&self) -> *const T;
 }
@@ -41,6 +43,23 @@ unsafe impl DeviceCopy for usize {}
 unsafe impl DeviceCopy for f32 {}
 unsafe impl DeviceCopy for f64 {}
 unsafe impl<T: DeviceCopy, const N: usize> DeviceCopy for [T; N] {}
+
+unsafe impl ValidAsZeroBits for bool {}
+unsafe impl ValidAsZeroBits for i8 {}
+unsafe impl ValidAsZeroBits for i16 {}
+unsafe impl ValidAsZeroBits for i32 {}
+unsafe impl ValidAsZeroBits for i64 {}
+unsafe impl ValidAsZeroBits for i128 {}
+unsafe impl ValidAsZeroBits for isize {}
+unsafe impl ValidAsZeroBits for u8 {}
+unsafe impl ValidAsZeroBits for u16 {}
+unsafe impl ValidAsZeroBits for u32 {}
+unsafe impl ValidAsZeroBits for u64 {}
+unsafe impl ValidAsZeroBits for u128 {}
+unsafe impl ValidAsZeroBits for usize {}
+unsafe impl ValidAsZeroBits for f32 {}
+unsafe impl ValidAsZeroBits for f64 {}
+unsafe impl<T: ValidAsZeroBits, const N: usize> ValidAsZeroBits for [T; N] {}
 
 pub trait MemcpySource<T> {
     fn len(&self) -> usize;
@@ -279,6 +298,16 @@ impl SyclQueue {
         len: usize,
     ) -> Result<SyclBuffer<T>, result::SyclError> {
         unsafe { self.alloc(len, sys::sycl_rs_alloc_kind_t::SYCL_RS_ALLOC_KIND_DEVICE) }
+    }
+
+    pub unsafe fn alloc_zeros<T: ValidAsZeroBits>(
+        self: &Arc<Self>,
+        len: usize,
+    ) -> Result<SyclBuffer<T>, result::SyclError> {
+        let buffer = unsafe { self.alloc_device::<T>(len)? };
+        let bytes = bytes_for_len::<T>(len)?;
+        unsafe { sys::sycl_rs_memset(self.handle, buffer.ptr.cast::<c_void>(), 0, bytes).result()? };
+        Ok(buffer)
     }
 
     pub unsafe fn alloc_shared<T>(

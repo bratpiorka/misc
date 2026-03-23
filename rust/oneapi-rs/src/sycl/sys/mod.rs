@@ -125,6 +125,14 @@ unsafe extern "C" {
     ) -> sycl_rs_result_t;
 }
 unsafe extern "C" {
+    pub fn sycl_rs_memset(
+        queue: *mut sycl_rs_queue_t,
+        dst: *mut ::core::ffi::c_void,
+        value: ::core::ffi::c_int,
+        bytes: usize,
+    ) -> sycl_rs_result_t;
+}
+unsafe extern "C" {
     pub fn sycl_rs_memcpy(
         queue: *mut sycl_rs_queue_t,
         dst: *mut ::core::ffi::c_void,

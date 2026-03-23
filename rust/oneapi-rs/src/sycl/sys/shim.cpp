@@ -267,6 +267,20 @@ sycl_rs_result_t sycl_rs_free(sycl_rs_queue_t *queue, void *ptr) {
     return with_exceptions([&] { sycl::free(ptr, queue->value); });
 }
 
+sycl_rs_result_t sycl_rs_memset(sycl_rs_queue_t *queue, void *dst, int value,
+                                size_t bytes) {
+    if (queue == nullptr) {
+        set_error("queue must not be null");
+        return SYCL_RS_RESULT_INVALID_ARGUMENT;
+    }
+    if (bytes > 0 && dst == nullptr) {
+        set_error("memset destination must not be null when bytes > 0");
+        return SYCL_RS_RESULT_INVALID_ARGUMENT;
+    }
+
+    return with_exceptions([&] { queue->value.memset(dst, value, bytes).wait(); });
+}
+
 sycl_rs_result_t sycl_rs_memcpy(
     sycl_rs_queue_t *queue,
     void *dst,
