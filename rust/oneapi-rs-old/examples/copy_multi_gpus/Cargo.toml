@@ -1,0 +1,7 @@
+[package]
+name = "copy_multi_gpus"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+oneapi-rs = { path = "../.." }

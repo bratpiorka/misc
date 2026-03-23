@@ -2,7 +2,7 @@
 mod oneapi_helper;
 
 use oneapi_rs::unified_runtime::{
-    result::{self, UnifiedRuntimeError},
+    result::{self, UrError},
     sys::{self, ur_adapter_handle_t, ur_device_type_t},
 };
 
@@ -16,14 +16,16 @@ fn tear_down_loader() {
     let _ = result::loader::tear_down();
 }
 
-fn format_ur_error(error: UnifiedRuntimeError, call: &str) -> String {
+fn format_ur_error(error: UrError, call: &str) -> String {
     format!("{call} failed with error code {}", error.0 as u32)
 }
 
 fn run() -> Result<(), String> {
     oneapi_helper::configure_runtime_environment();
 
-    result::loader::init(0).map_err(|error| format_ur_error(error, "urLoaderInit"))?;
+    if let Err(error) = result::loader::init(0) {
+        return Err(format_ur_error(error, "urLoaderInit"));
+    }
 
     let adapters = match result::adapter::get() {
         Ok(adapters) => adapters,

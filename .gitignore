@@ -1,4 +1,5 @@
 *.so
 *.o
-vscode/*
-matmul/matmul
+.vscode/*
+rust/.vscode/settings.json
+rust/oneapi-rs/.vscode/settings.json

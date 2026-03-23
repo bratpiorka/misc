@@ -7,44 +7,44 @@ use core::ffi::c_void;
 
 /// Wrapper around `ur_result_t`.
 #[derive(Clone, Copy, PartialEq, Eq)]
-pub struct UnifiedRuntimeError(pub sys::ur_result_t);
+pub struct UrError(pub sys::ur_result_t);
 
 impl sys::ur_result_t {
     #[inline]
-    pub fn result(self) -> Result<(), UnifiedRuntimeError> {
+    pub fn result(self) -> Result<(), UrError> {
         match self {
             sys::ur_result_t::UR_RESULT_SUCCESS => Ok(()),
-            _ => Err(UnifiedRuntimeError(self)),
+            _ => Err(UrError(self)),
         }
     }
 }
 
-impl core::fmt::Debug for UnifiedRuntimeError {
+impl core::fmt::Debug for UrError {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        f.debug_tuple("UnifiedRuntimeError")
+        f.debug_tuple("UrError")
             .field(&(self.0 as u32))
             .finish()
     }
 }
 
-impl std::fmt::Display for UnifiedRuntimeError {
+impl std::fmt::Display for UrError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "Unified Runtime error code {}", self.0 as u32)
     }
 }
 
-impl std::error::Error for UnifiedRuntimeError {}
+impl std::error::Error for UrError {}
 
 pub mod loader {
     //! Unified Runtime loader functions.
 
-    use super::{UnifiedRuntimeError, sys};
+    use super::{UrError, sys};
 
-    pub fn init(device_flags: sys::ur_device_init_flags_t) -> Result<(), UnifiedRuntimeError> {
+    pub fn init(device_flags: sys::ur_device_init_flags_t) -> Result<(), UrError> {
         unsafe { sys::urLoaderInit(device_flags, core::ptr::null_mut()).result() }
     }
 
-    pub fn tear_down() -> Result<(), UnifiedRuntimeError> {
+    pub fn tear_down() -> Result<(), UrError> {
         unsafe { sys::urLoaderTearDown().result() }
     }
 }
@@ -52,9 +52,9 @@ pub mod loader {
 pub mod adapter {
     //! Adapter discovery and lifetime helpers.
 
-    use super::{UnifiedRuntimeError, sys};
+    use super::{UrError, sys};
 
-    pub fn get() -> Result<Vec<sys::ur_adapter_handle_t>, UnifiedRuntimeError> {
+    pub fn get() -> Result<Vec<sys::ur_adapter_handle_t>, UrError> {
         let mut count = 0u32;
         unsafe {
             sys::urAdapterGet(0, core::ptr::null_mut(), &mut count).result()?;
@@ -68,7 +68,13 @@ pub mod adapter {
 
     /// # Safety
     /// Handles must be valid adapter handles returned by Unified Runtime.
-    pub unsafe fn release(adapter: sys::ur_adapter_handle_t) -> Result<(), UnifiedRuntimeError> {
+    pub unsafe fn retain(adapter: sys::ur_adapter_handle_t) -> Result<(), UrError> {
+        unsafe { sys::urAdapterRetain(adapter).result() }
+    }
+
+    /// # Safety
+    /// Handles must be valid adapter handles returned by Unified Runtime.
+    pub unsafe fn release(adapter: sys::ur_adapter_handle_t) -> Result<(), UrError> {
         unsafe { sys::urAdapterRelease(adapter).result() }
     }
 }
@@ -76,13 +82,13 @@ pub mod adapter {
 pub mod platform {
     //! Platform enumeration helpers.
 
-    use super::{UnifiedRuntimeError, get_info_string, sys};
+    use super::{UrError, get_info_string, sys};
 
     /// # Safety
     /// `adapter` must be a valid adapter handle.
     pub unsafe fn get(
         adapter: sys::ur_adapter_handle_t,
-    ) -> Result<Vec<sys::ur_platform_handle_t>, UnifiedRuntimeError> {
+    ) -> Result<Vec<sys::ur_platform_handle_t>, UrError> {
         let mut count = 0u32;
         unsafe {
             sys::urPlatformGet(adapter, 0, core::ptr::null_mut(), &mut count).result()?;
@@ -97,7 +103,7 @@ pub mod platform {
 
     /// # Safety
     /// `platform` must be a valid platform handle.
-    pub unsafe fn name(platform: sys::ur_platform_handle_t) -> Result<String, UnifiedRuntimeError> {
+    pub unsafe fn name(platform: sys::ur_platform_handle_t) -> Result<String, UrError> {
         unsafe {
             get_info_string(
                 |prop_size, prop_value, prop_size_ret| {
@@ -118,14 +124,14 @@ pub mod platform {
 pub mod device {
     //! Device enumeration helpers.
 
-    use super::{UnifiedRuntimeError, get_info_string, sys};
+    use super::{UrError, get_info_string, sys};
 
     /// # Safety
     /// `platform` must be a valid platform handle.
     pub unsafe fn get(
         platform: sys::ur_platform_handle_t,
         device_type: sys::ur_device_type_t,
-    ) -> Result<Vec<sys::ur_device_handle_t>, UnifiedRuntimeError> {
+    ) -> Result<Vec<sys::ur_device_handle_t>, UrError> {
         let mut count = 0u32;
         unsafe {
             sys::urDeviceGet(platform, device_type, 0, core::ptr::null_mut(), &mut count)
@@ -147,7 +153,7 @@ pub mod device {
 
     /// # Safety
     /// `device` must be a valid device handle.
-    pub unsafe fn name(device: sys::ur_device_handle_t) -> Result<String, UnifiedRuntimeError> {
+    pub unsafe fn name(device: sys::ur_device_handle_t) -> Result<String, UrError> {
         unsafe {
             get_info_string(
                 |prop_size, prop_value, prop_size_ret| {
@@ -166,7 +172,7 @@ pub mod device {
 
 fn get_info_string(
     mut get_info: impl FnMut(usize, *mut c_void, *mut usize) -> sys::ur_result_t,
-) -> Result<String, UnifiedRuntimeError> {
+) -> Result<String, UrError> {
     let mut size = 0usize;
     get_info(0, core::ptr::null_mut(), &mut size).result()?;
 

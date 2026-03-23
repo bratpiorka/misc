@@ -6,5 +6,5 @@ pub mod safe;
 #[allow(warnings)]
 pub mod sys;
 
-pub use self::safe::Context;
+pub use self::safe::UrContext;
 
