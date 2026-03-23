@@ -14,7 +14,7 @@ oneapi-rs: /home/rrudnick/rust/rust/oneapi-rs
 | DriverError | error type | SyclError | `sycl::exception::what()` via shim | Present | n/a | Error type backed by shim result code plus message. |
 | DevicePtr | trait/type | DevicePtr | `*const T` view over USM-backed storage | Partial | unsafe trait | Present as a safe-layer trait and currently implemented for `SyclBuffer<T>`. |
 | DevicePtrMut | trait/type | DevicePtrMut | `*mut T` view over USM-backed storage | Partial | unsafe trait | Present as a safe-layer trait and currently implemented for `SyclBuffer<T>`. |
-| DeviceRepr | trait | DeviceCopy | typed memcpy-compatible values | Partial | unsafe trait | Covers copy-safe POD-style values for transfers; kernel arguments are handled separately through `SyclKernelArg`. |
+| DeviceRepr | trait | DeviceCopy | typed memcpy-compatible values | Partial | unsafe trait | Covers copy-safe POD-style values for transfers; kernel arguments are handled separately through `SyclKernelArg`, as shown by the `examples/device_repr` pattern for passing a `#[repr(C)] Copy` struct by value. |
 | ValidAsZeroBits | trait | ValidAsZeroBits | zero-initializable typed USM allocation contract | Present | unsafe trait | Used by `SyclQueue::alloc_zeros()` to guarantee all-zero initialization is valid for the element type. |
 | LaunchConfig | struct | None | `SyclKernel::launch_1d(...)` with explicit global/local sizes | Partial | n/a | There is a direct 1D launch entrypoint, but no reusable launch-config struct. |
 | PushKernelArg | trait | SyclKernelArg | `handler::set_arg` + `raw_kernel_arg` | Partial | safe type | Typed kernel-argument builder exists as a value type, and now works naturally with `DevicePtr` / `DevicePtrMut`. |
@@ -60,7 +60,7 @@ oneapi-rs: /home/rrudnick/rust/rust/oneapi-rs
 - Copy API is intentionally neutral and centralized as async `sycl::memcpy(&queue, src, dst)` plus blocking `sycl::memcpy_sync(&queue, src, dst)` rather than direction-specific helpers.
 - Buffer allocation supports device, shared, and host USM via `alloc_device`, `alloc_shared`, and `alloc_host`, plus zero-initialized device allocation through `alloc_zeros`.
 - `clone_htod` has been removed in favor of explicit `alloc_device(...)` plus `sycl::memcpy(...)`; `clone_dtoh` remains as a convenience helper.
-- Runtime kernel compilation and execution are now supported through `load_program_from_source`, `create_kernel`, `SyclKernelArg`, `DevicePtr` / `DevicePtrMut`, and `launch_1d`.
+- Runtime kernel compilation and execution are now supported through `load_program_from_source`, `create_kernel`, `SyclKernelArg`, `DevicePtr` / `DevicePtrMut`, and `launch_1d`, including passing `#[repr(C)] Copy` structs by value as kernel arguments.
 - Device discovery now includes `SyclContext::device_count()` and ordinal-based queue/context creation helpers for multi-device workflows.
 - Example execution is currently done through the crate-local `run_examples.sh`, which sources oneAPI `setvars.sh` before running the SYCL examples, including the multi-GPU path.
 
@@ -73,8 +73,8 @@ oneapi-rs: /home/rrudnick/rust/rust/oneapi-rs
 - Native interop: current `handle()` accessors expose shim-owned opaque handles, not backend-native handles.
 
 5. Recommended Next Additions
-1	SyclEvent plus async memcpy support
-2	memset/fill and alloc_zeros helpers
-3	device enumeration and attribute queries
+1	event query/status helpers and a standalone record-event API
+2	general memset/fill helpers beyond `alloc_zeros`
+3	device metadata and attribute queries (names, backend, ordinal-oriented inspection)
 4	launch configuration and multi-dimensional kernel helpers
 5	richer typed buffer/subview ergonomics beyond `SyclBuffer<T>`

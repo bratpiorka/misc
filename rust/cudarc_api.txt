@@ -206,3 +206,8 @@ Test-only extra cudarc usage (excluded from main inventory)
   - CudaSlice, DevicePtr, DevicePtrMut
   - memset_d8_async
   - NVRTC compilation helpers
+
+Current oneapi-rs parity note
+- The Unified Runtime safe layer now includes `UrEvent` as the direct high-level counterpart to `CudaEvent`.
+- It also now exposes async `memcpy_htod`, `memcpy_dtoh`, and USM-to-USM copy helpers that return events, plus `UrQueue::record_event()`.
+- The `oneapi-rs/examples/copy_multi_gpus_async` example exercises the event-driven multi-GPU staging path built around those APIs.

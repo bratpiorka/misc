@@ -34,5 +34,9 @@ echo "Running kernel example"
 cargo run --example kernel
 
 echo
+echo "Running device_repr example"
+cargo run --example device_repr
+
+echo
 echo "Running multi_gpu example"
 cargo run --example multi_gpu
