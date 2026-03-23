@@ -3,3 +3,5 @@
 .vscode/*
 rust/.vscode/settings.json
 rust/oneapi-rs/.vscode/settings.json
+rust/oneapi-rs/bindings_generator/sycl/target/*
+rust/oneapi-rs/target/*
