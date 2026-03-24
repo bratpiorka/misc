@@ -1,7 +1,0 @@
-[package]
-name = "launch_kernel"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-oneapi-rs = { path = "../.." }

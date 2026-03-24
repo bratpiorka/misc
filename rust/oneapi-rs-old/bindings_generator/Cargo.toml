@@ -1,9 +1,0 @@
-[package]
-name = "bindings_generator"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-anyhow = "1.0.97"
-bindgen = { version = "0.71.1", features = ["prettyplease"] }
-clap = { version = "4.5.34", features = ["derive"] }
